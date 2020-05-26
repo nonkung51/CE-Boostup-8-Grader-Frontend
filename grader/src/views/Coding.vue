@@ -1,11 +1,12 @@
 <template>
-  <div class="about">
-     <complex></complex>
+  <div>
+      <complex></complex>
   </div>
 </template>
 
 <script>
 import complex from '../components/complex.vue'
+
 export default {
   components:{
      complex
@@ -15,7 +16,7 @@ export default {
 
 <style scoped>
    *{
-     animation: fadein 1s;
+     animation: fadein 1s; 
    }
    @keyframes fadein {
     from {
