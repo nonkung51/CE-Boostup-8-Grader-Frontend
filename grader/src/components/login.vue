@@ -57,7 +57,9 @@
               </v-card-text>
               <v-card-actions>
                 <v-spacer></v-spacer>
-                <v-btn v-on="{}" color="primary">Login</v-btn>
+                <router-link to="/coding">
+                  <v-btn v-on="{}" color="primary">Login</v-btn>
+                </router-link>
               </v-card-actions>
             </v-card>
           </v-col>
@@ -73,9 +75,6 @@
       source: String,
     },
     methods: {
-        login(){
-            
-        }
     },
   }
 </script>
