@@ -5,7 +5,7 @@
 </template>
 
 <script>
-import complex from '../components/complex.vue'
+import complex from '../components/coding.vue'
 
 export default {
   components:{

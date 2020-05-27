@@ -5,7 +5,7 @@
 </template>
 
 <script>
-import test from '../components/Test.vue'
+import test from '../components/submission.vue'
 export default {
   components:{
      test
