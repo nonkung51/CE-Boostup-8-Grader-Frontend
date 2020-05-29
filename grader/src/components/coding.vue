@@ -1,30 +1,38 @@
 <template>
-<div>
-    <v-navigation-drawer width="512" v-model="drawerRight" clipped :mini-variant.sync="mini" app right floating>
-        <v-list dense>
-            <v-list-item>
-                <v-icon v-if="mini" @click.stop="mini = !mini"> mdi-chevron-left</v-icon>
-                <v-icon v-else @click.stop="mini = !mini"> mdi-chevron-right</v-icon>
-            </v-list-item>
-            <v-divider></v-divider>
-            <v-list-item @click.stop="right = !right">
-                <v-list-item-icon>
-                    <v-icon>mdi mdi-file-document</v-icon>
-                </v-list-item-icon>
-                <v-list-item-content>
-                    <v-list-item-title>Task PDF Here</v-list-item-title>
-                </v-list-item-content>
-            </v-list-item>
-        </v-list>
+<v-container fluid>
+    <v-navigation-drawer no-gutters clipped permanent app :mini-variant.sync="mini" width="600">
+        <v-row class="fill-height" no-gutters>
+            <v-list v-if="!mini" class="grow">
+                <v-list-item @click.stop="right = !right">
+                    <v-list-item-content dark>
+                        <v-list-item-title>PDF of Task ID : {{ task_id }}</v-list-item-title>
+                    </v-list-item-content>
+                </v-list-item>
+            </v-list>
+
+            <v-navigation-drawer dark mini-variant>
+                <v-list dense>
+                    <v-list-item>
+                        <v-icon v-if="mini" @click.stop="mini = !mini"> mdi-chevron-right</v-icon>
+                        <v-icon v-else @click.stop="mini = !mini"> mdi-chevron-left</v-icon>
+                    </v-list-item>
+                    <v-divider></v-divider>
+                    <v-list-item>
+                        <v-icon>mdi-file-pdf</v-icon>
+                    </v-list-item>
+                </v-list>
+            </v-navigation-drawer>
+
+        </v-row>
     </v-navigation-drawer>
 
-    <v-content >
+    <v-list-item>
+        <v-list-item-content class="pa-5">
             <IDE></IDE>
-    </v-content>
+        </v-list-item-content>
+    </v-list-item>
 
-    <v-navigation-drawer v-model="right" fixed right temporary></v-navigation-drawer>
-
-</div>
+</v-container>
 </template>
 
 <script>
@@ -42,6 +50,10 @@ export default {
         drawerRight: null,
         right: false,
         mini: true,
+        task_id: '0',
     }),
+    created() {
+        this.task_id = this.$route.params.task_id;
+    },
 }
 </script>

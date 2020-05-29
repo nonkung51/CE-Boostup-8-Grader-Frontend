@@ -1,54 +1,77 @@
 <template>
 <!-- Two-way Data-Binding -->
-<v-card style="border-radius: 1vw;" class="pa-5">
-    <v-card style="border-radius: 50px;" class="elevation-5" id="editor-panel">
-        <v-row align="center" justify="center">
-            <v-col cols="4">
-                <v-text-field label="Editor Language" class="ma-0" hide-details v-model="language" outlined readonly>
-                    <template v-slot:append>
-                        <v-icon>mdi-alphabetical-variant</v-icon>
-                    </template>
-                </v-text-field>
-            </v-col>
-            <v-col cols="4">
-                <v-select hide-details :items="editorThemes" class="ma-0" v-model="theme" outlined label="Editor Theme">
-                    <template v-slot:prepend-inner>
-                        <v-icon>mdi-theme-light-dark</v-icon>
-                    </template>
-                </v-select>
-            </v-col>
-        </v-row>
-    </v-card>
-    <v-card style="border-radius: 10px;" class="mt-2 pa-5 elevation-5">
-        <!-------------------------------  IDE ------------------------ -->
-        <codemirror v-model="code" :options="cmOptions" />
-        <v-row full-width justify="space-between">
+<v-card style="border-radius: 10px;" class="mt-2 pa-5 elevation-5">
+    <v-row>
+        <v-col align="start">
+            <v-btn text style="font-weight:bold;" class="title">Your Code Here..</v-btn>
+        </v-col>
+        <v-col cols="3">
+            <v-text-field label="Editor Language" class="ma-0" hide-details v-model="language" outlined readonly>
+                <template v-slot:append>
+                    <v-icon>mdi-alphabetical-variant</v-icon>
+                </template>
+            </v-text-field>
+        </v-col>
+        <v-col cols="3">
+            <v-select hide-details :items="editorThemes" class="ma-0" v-model="theme" outlined label="Editor Theme">
+                <template v-slot:prepend-inner>
+                    <v-icon>mdi-theme-light-dark</v-icon>
+                </template>
+            </v-select>
+        </v-col>
+    </v-row>
+    <v-divider></v-divider>
+    <!-- space -->
+    <v-col></v-col>
+    <!-- code editor -->
+    <codemirror v-model="code" :options="cmOptions" />
+    <v-row full-width justify="space-between">
 
-            <v-col align="start">
-                <v-btn color="info" raised>
-                    <v-icon left>mdi-upload</v-icon> Upload Code
+        <v-col align="start">
+            <v-btn color="info" raised>
+                <v-icon left>mdi-upload</v-icon> Upload Code
+            </v-btn>
+        </v-col>
+
+        <v-col align="end">
+            <v-btn color="success" raised @click.end="bot_nav = true">
+                <v-icon left>mdi-code-tags-check</v-icon> Compile
+            </v-btn>
+            <v-btn @click="snackbar = true" color="success" raised>
+                <v-icon left>mdi-cloud-upload</v-icon> Submit
+            </v-btn>
+            <!-- submit warning -->
+            <v-snackbar v-model="snackbar">
+                {{ text }}
+                <v-btn color="pink" text @click="snackbar = false">
+                    Close
                 </v-btn>
-            </v-col>
-
-            <v-col align="end" >
-                <v-btn color="success" raised>
-                    <v-icon left>mdi-code-tags-check</v-icon> Compile
+            </v-snackbar>
+            <!-- Compiler FeedBack -->
+            <!-- <v-bottom-navigation :input-value="bot_nav" color="indigo" app>
+                <v-btn>
+                    <span>Recents</span>
+                    <v-icon>mdi-history</v-icon>
                 </v-btn>
-                <v-btn @click="snackbar = true" color="success" raised>
-                    <v-icon left>mdi-cloud-upload</v-icon> Submit
+
+                <v-btn>
+                    <span>Favorites</span>
+                    <v-icon>mdi-heart</v-icon>
                 </v-btn>
-                <!-- submit warning -->
-                <v-snackbar v-model="snackbar">
-                    {{ text }}
-                    <v-btn color="pink" text @click="snackbar = false">
-                        Close
-                    </v-btn>
-                </v-snackbar>
 
-            </v-col>
+                <v-btn>
+                    <span>Nearby</span>
+                    <v-icon>mdi-map-marker</v-icon>
+                </v-btn>
 
-        </v-row>
-    </v-card>
+                <v-btn @click.end="bot_nav = false">
+                    <v-icon>mdi-chevron-double-down</v-icon>
+                </v-btn>
+            </v-bottom-navigation> -->
+
+        </v-col>
+
+    </v-row>
 </v-card>
 
 <!-- Or manually control the data synchronization -->
@@ -79,6 +102,7 @@ export default {
                 theme: 'base16-dark',
                 lineNumbers: true,
                 line: true,
+
                 // more CodeMirror options...
             },
             language: "C/C++",
@@ -87,7 +111,10 @@ export default {
             //  snackbar //
             snackbar: false,
             text: 'Submit Success',
-            //          //
+            ///////////////
+            //  bot nav //
+            bot_nav: false
+            //////////////
 
         }
     },
@@ -109,11 +136,7 @@ export default {
             this.code = newCode
         }
     },
-    computed: {
-        codemirror() {
-            return this.$refs.cmEditor.codemirror
-        }
-    },
+
     mounted() {
         console.log('the current CodeMirror instance object:', this.codemirror)
         // you can use this.codemirror to do something...
@@ -122,7 +145,11 @@ export default {
 </script>
 
 <style>
-#editor-panel>div {}
+.CodeMirror {
+    min-height: 500px;
+    min-width: 500px;
+    overflow: scroll;
+}
 
 .CodeMirror-scroll {
     text-align: left !important;
