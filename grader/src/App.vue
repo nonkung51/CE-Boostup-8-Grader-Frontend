@@ -1,7 +1,7 @@
 <template>
 <v-app id="app">
 
-    <v-content class="bg" justify="center" align="center" fill-height>
+    <v-content justify="center" align="center" fill-height>
         <router-view />
     </v-content>
     <!-- <v-footer app color="#42b983" class="white--text">
@@ -19,14 +19,19 @@
     -moz-osx-font-smoothing: grayscale;
     text-align: center;
     color: #2c3e50;
-    background: rgb(250, 250, 250);
+    // background: rgb(250, 250, 250);
+}
+</style>
+
+<style>
+.task-rounded-top {
+    border-top-left-radius: 20px !important;
+    border-top-right-radius: 20px !important;
 }
 
-.bg {
-    // background: url('assets/CECECECECE.png');
-    // background-size: cover;
-    // background-repeat: no-repeat;
-    // background-position: center center;
+.task-rounded-bot {
+    border-bottom-left-radius: 20px !important;
+    border-bottom-right-radius: 20px !important;
 }
 </style>
 

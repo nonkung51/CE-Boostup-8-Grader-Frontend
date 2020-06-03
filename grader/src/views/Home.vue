@@ -1,119 +1,88 @@
 <template>
-<v-container class="home">
-    <v-app-bar dense color="white" app clipped-left>
+<v-sheet class="home">
+    <v-app-bar style="z-index:6 !important;" color="white" app clipped-left>
         <!-- Title -->
-        <v-toolbar-title class="mt-2">CE-BU 8 | Grader</v-toolbar-title>
+
+        <v-toolbar class="elevation-0" color="white" >
+            <v-avatar :tile="true">
+                <img :src="require('@/assets/logo.png')" alt="logo">
+            </v-avatar>
+            <v-toolbar-title class="ml-2">CE-BU 8 | Grader </v-toolbar-title>
+        </v-toolbar>
 
         <!-- tabs menu -->
-        <template v-slot:extension>
+        <!-- <template v-slot:extension>
             <v-tabs align-with-title id="nav" slider-color="success">
                 <v-tab to="/Home">Home</v-tab>
                 <v-tab to="/Home/task">Tasks</v-tab>
                 <v-tab to="/Home/submission">Submissions</v-tab>
+                <v-tab href="https://stackoverflow.com/">Learn</v-tab>
+                
             </v-tabs>
-        </template>
+        </template> -->
         <!--  -->
+        <v-tabs align-with-title id="nav" slider-color="success">
+            <v-tab to="/Home">Home</v-tab>
+            <v-tab to="/Home/task">Tasks</v-tab>
+            <v-tab to="/Home/submission">Submissions</v-tab>
+            <v-tab href="https://stackoverflow.com/">Learn</v-tab>
+        </v-tabs>
         <v-spacer></v-spacer>
-        <v-app-bar-nav-icon @click.stop="drawer = true"></v-app-bar-nav-icon>
+        <v-switch v-model="$vuetify.theme.dark" color="white" hide-details></v-switch>
+        <v-menu offset-y offset-x="50" transition="slide-x-transition">
+            <template v-slot:activator="{ on }">
+                <v-chip v-on="on" style="border-radius:50px !important;width:250px;"  class="pa-5 elevation-3" pill outlined color="black" @click="{}">
+                    <v-badge bordered bottom color="green accent-4" dot offset-x="15" offset-y="10">
+                        <v-avatar left>
+                            <v-img @click.stop="mini = !mini" src="https://cdn.vuetifyjs.com/images/profiles/marcus.jpg"></v-img>
+                        </v-avatar>
+                    </v-badge>
+                    {{user_Name + " Love rung Tu"}}
+                </v-chip>
+            </template>
+            <v-card width="300">
+                <v-list dark>
+                    <v-list-item>
+                        <v-list-item-avatar>
+                            <v-img src="https://cdn.vuetifyjs.com/images/profiles/marcus.jpg"></v-img>
+                        </v-list-item-avatar>
+                        <v-list-item-content>
+                            <v-list-item-title>John Leider</v-list-item-title>
+                            <v-list-item-subtitle>john@vuetifyjs.com</v-list-item-subtitle>
+                        </v-list-item-content>
+                        <v-list-item-action>
+                            <v-btn icon @click="menu = false">
+                                <v-icon>mdi-close-circle</v-icon>
+                            </v-btn>
+                        </v-list-item-action>
+                    </v-list-item>
+                </v-list>
+                <v-list>
+                    <v-list-item :ripple="false">
+                        <v-list-item-action>
+                            <v-icon >account_box</v-icon>
+                        </v-list-item-action>
+                        <v-list-item-subtitle>
+                            <v-btn block dark to="/Home/profile">Profile</v-btn>
+                        </v-list-item-subtitle>
+                    </v-list-item>
+                    <v-list-item :ripple="false">
+                        <v-list-item-action>
+                            <v-icon>mdi-exit-to-app</v-icon>
+                        </v-list-item-action>
+                        <v-list-item-subtitle>
+                            <v-btn block dark @click.end="logout()">Logout</v-btn>
+                        </v-list-item-subtitle>
+                    </v-list-item>
+                </v-list>
+            </v-card>
+        </v-menu>
     </v-app-bar>
 
-    <!-- <v-navigation-drawer v-model="right" :mini-variant.sync="mini" fixed right permanent> -->
-    <v-navigation-drawer v-model="drawer" mini-variant app right permanent>
-        <v-list v-if="login" dense>
-            <!-- Profile -->
-            <v-list-item class="px-2">
+    <router-view>
+    </router-view>
 
-                <v-list-item-avatar style="border-radius: 0 !important;">
-                    <v-badge bordered bottom color="green accent-4" dot offset-x="10" offset-y="10">
-                        <v-avatar size="40">
-                            <v-img @click.stop="mini = !mini" src="https://randomuser.me/api/portraits/women/75.jpg"></v-img>
-                        </v-avatar>
-                    </v-badge>
-                </v-list-item-avatar>
-            </v-list-item>
-            <v-divider></v-divider>
-            <!--  -->
-
-            <!-- Item -->
-            <v-list>
-                <v-list-item v-for="item in items" :key="item.title" :to="item.to">
-                    <v-list-item-icon>
-                        <v-icon @click="{}">{{ item.icon }}</v-icon>
-                    </v-list-item-icon>
-
-                    <v-list-item-content>
-
-                    </v-list-item-content>
-
-                </v-list-item>
-            </v-list>
-
-            <v-divider></v-divider>
-            <v-list v-if="login">
-                <v-list-item>
-                    <v-list-item-icon>
-                        <v-icon @click.stop="mini = !mini">exit_to_app</v-icon>
-                    </v-list-item-icon>
-                </v-list-item>
-            </v-list>
-            <!--  -->
-        </v-list>
-
-    </v-navigation-drawer>
-
-    <v-navigation-drawer v-model="mini" app right temporary>
-        <v-list v-if="login" dense>
-            <!-- Profile -->
-            <v-list-item class="px-2">
-
-                <v-list-item-avatar style="border-radius: 0 !important;">
-                    <v-badge bordered bottom color="green accent-4" dot offset-x="10" offset-y="10">
-                        <v-avatar size="40">
-                            <v-img @click.stop="mini = !mini" src="https://randomuser.me/api/portraits/women/75.jpg"></v-img>
-                        </v-avatar>
-                    </v-badge>
-                </v-list-item-avatar>
-                <v-list-item-content>
-                    <v-list-item-title>{{user_Name}}</v-list-item-title>
-                    <v-list-item-subtitle>Logged In</v-list-item-subtitle>
-                </v-list-item-content>
-                <v-spacer></v-spacer>
-                <v-icon @click.stop="mini = !mini">mdi-chevron-right</v-icon>
-            </v-list-item>
-            <v-divider></v-divider>
-            <!--  -->
-
-            <!-- Item -->
-            <v-list>
-                <v-list-item v-for="item in items" :key="item.title" :to="item.to">
-                    <v-list-item-icon>
-                        <v-icon @click="{}">{{ item.icon }}</v-icon>
-                    </v-list-item-icon>
-
-                    <v-list-item-content>
-                        <v-list-item-title @click="{}">{{ item.title }}</v-list-item-title>
-                    </v-list-item-content>
-                </v-list-item>
-            </v-list>
-
-            <v-divider></v-divider>
-            <v-list v-if="login">
-                <v-list-item>
-                    <v-list-item-icon>
-                        <v-icon @click="{}">exit_to_app</v-icon>
-                    </v-list-item-icon>
-                    <v-list-item-content>
-                        <v-btn dark block @click="logout()">Logout</v-btn>
-                    </v-list-item-content>
-                </v-list-item>
-            </v-list>
-            <!--  -->
-        </v-list>
-
-    </v-navigation-drawer>
-
-    <router-view></router-view>
-</v-container>
+</v-sheet>
 </template>
 
 <script>
@@ -148,7 +117,8 @@ export default {
                     to: "/Home/submission"
                 }
             ],
-            login: true
+            login: true,
+            drawerToggle: true,
         }
     },
     created() {
@@ -174,6 +144,10 @@ export default {
             color: #42b983;
         }
     }
+}
+
+.btn-toggle {
+    flex-direction: column;
 }
 </style>
 

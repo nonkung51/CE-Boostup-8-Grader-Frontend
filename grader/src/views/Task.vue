@@ -1,7 +1,5 @@
 <template>
-  <div class="submission">
      <task></task>
-  </div>
 </template>
 
 <script>

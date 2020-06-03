@@ -7,14 +7,17 @@ import router from './router'
 // Plugin
 import VueCodemirror from 'vue-codemirror'
 import VueCookies from 'vue-cookies'
+import VueParticles from 'vue-particles'
 
 import 'codemirror/lib/codemirror.css'
 
 Vue.use(VueCodemirror)
 Vue.use(VueCookies)
+Vue.use(VueParticles)
 
 
 Vue.config.productionTip = false
+
 
 new Vue({
     vuetify,

@@ -1,7 +1,5 @@
 <template>
-  <div class="submission">
      <test></test>
-  </div>
 </template>
 
 <script>

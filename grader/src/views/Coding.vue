@@ -1,7 +1,5 @@
 <template>
-  <div>
       <complex></complex>
-  </div>
 </template>
 
 <script>

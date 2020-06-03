@@ -1,7 +1,5 @@
 <template>
-  <div class="home">
     <profile></profile>
-  </div>
 </template>
 
 <script>
@@ -9,7 +7,7 @@
 import profile from '../components/profile.vue'
 
 export default {
-  name: 'Home',
+  name: 'Profile',
   components: {
     profile
   }
