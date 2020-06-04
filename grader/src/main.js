@@ -3,6 +3,7 @@ import App from './App.vue'
 import vuetify from './plugins/vuetify'
 import 'material-design-icons-iconfont/dist/material-design-icons.css'
 import router from './router'
+import store from './store'
 
 // Plugin
 import VueCodemirror from 'vue-codemirror'
@@ -24,5 +25,6 @@ new Vue({
     router,
     VueCodemirror,
     VueCookies,
+    store, // vuex store
     render: h => h(App)
 }).$mount('#app')
