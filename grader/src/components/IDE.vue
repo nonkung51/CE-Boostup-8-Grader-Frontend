@@ -14,12 +14,12 @@
         </v-col>
         <!-- font Size -->
         <v-col cols="2">
-            <v-text-field v-model="fonts" type="number" label="Font Size" hide-details outlined append-icon="mdi-format-size">
+            <v-text-field v-model="ide.fonts" type="number" label="Font Size" hide-details outlined append-icon="mdi-format-size">
             </v-text-field>
         </v-col>
         <!-- Language display -->
         <v-col cols="2">
-            <v-text-field label="Editor Language" class="ma-0" hide-details v-model="language" outlined readonly>
+            <v-text-field label="Editor Language" class="ma-0" hide-details v-model="ide.language" outlined readonly>
                 <template v-slot:append>
                     <v-icon>mdi-alphabetical-variant</v-icon>
                 </template>
@@ -27,7 +27,7 @@
         </v-col>
         <!-- Theme select -->
         <v-col cols="2">
-            <v-select hide-details :items="editorThemes" class="ma-0" v-model="theme" outlined label="Editor Theme">
+            <v-select hide-details :items="ide.editorThemes" class="ma-0" v-model="cmOptions.theme" outlined label="Editor Theme">
                 <template v-slot:prepend-inner>
                     <v-icon>mdi-theme-light-dark</v-icon>
                 </template>
@@ -38,7 +38,7 @@
     <!-- space -->
     <v-col></v-col>
     <!-- code editor -->
-    <codemirror v-model="code" :style="fontSize" :options="cmOptions" />
+    <codemirror v-model="ide.code" :style="ideStyle" :options="cmOptions" />
     <!-- action button -->
     <v-row full-width justify="space-between" align="center">
 
@@ -129,19 +129,21 @@ export default {
     },
     data() {
         return {
-            code: 'const a = 10',
             cmOptions: {
                 tabSize: 6,
                 mode: 'text/x-c++src',
                 theme: 'base16-dark',
                 lineNumbers: true,
                 line: true,
+                indentUnit: 0
                 // more CodeMirror options...
             },
-            fonts: 16,
-            language: "C/C++",
-            editorThemes: ["base16-dark", "base16-light"],
-            theme: "base16-dark",
+            ide: {
+                fonts: 16,
+                language: "C/C++",
+                editorThemes: ["base16-dark", "base16-light"],
+                code: 'const a = 10',
+            },
             //  snackbar //
             snackbar: false,
             text: 'Submit Success',
@@ -175,12 +177,6 @@ export default {
             ], // length depend on question's sample
         }
     },
-    watch: {
-        theme() {
-            this.cmOptions.theme = this.theme;
-
-        },
-    },
     computed: {
         shake() {
             return this.uploadError ? "shake-horizontal" : " ";
@@ -192,9 +188,9 @@ export default {
             }
             return arr;
         },
-        fontSize() {
+        ideStyle() {
             return {
-                fontSize: this.fonts + 'px',
+                'font-size': this.ide.fonts + 'px',
             }
         }
     },
@@ -237,28 +233,15 @@ export default {
         readTextFile(file) {
             var reader = new FileReader();
             reader.onload = () => {
-                var contents = reader.result; //.replace("\r\n","<br/>");
+                var contents = reader.result;
                 this.code = contents
             }
             reader.readAsText(file);
-            // not work ????
-            // var rawFile = new XMLHttpRequest();
-            // rawFile.open("GET", file, false);
-            // var allText
-            // rawFile.onreadystatechange = function () {
-            //     if (rawFile.readyState === 4) {
-            //         if (rawFile.status === 200 || rawFile.status == 0) {
-            //             allText = rawFile.responseText;
-            //         } else allText =null
-            //     } else allText = null
-            // }
-            // rawFile.send(null);
-            // return allText
         },
         delay(i) {
             setTimeout(() => {
                 this.compile_Status[i].state = true
-            }, 1000);
+            }, this.getRandomInt(5000));
         },
         Compiling() {
             // call bottom sheet

@@ -1,6 +1,7 @@
 <template>
 <v-app id="inspire">
-<v-sheet class="scaleOver" :class="scaleover" height="200" width="200" color="#42b983"></v-sheet>
+    <v-sheet class="scaleOver" :class="scaleover" height="200" width="200" color="#42b983"></v-sheet>
+    <themeSwitch style="position:absolute;right:0;top:0;z-index:4;" ></themeSwitch>
     <v-content>
         <v-container style="position:absolute;background:transparent;" fill-height fluid>
             <v-row align="center" justify="center">
@@ -58,7 +59,7 @@
                 </v-col>
             </v-row>
         </v-container>
-        <vue-particles color="#dedede" :particleOpacity="0.7" :particlesNumber="80" shapeType="polygon" :particleSize="4" linesColor="#dedede" :linesWidth="1" :lineLinked="true" :lineOpacity="0.4" :linesDistance="150" :moveSpeed="3" :hoverEffect="true" hoverMode="grab" :clickEffect="true" clickMode="push"> </vue-particles>
+        <vue-particles style="height:100%" color="#dedede" :particleOpacity="0.7" :particlesNumber="80" shapeType="polygon" :particleSize="4" linesColor="#dedede" :linesWidth="1" :lineLinked="true" :lineOpacity="0.4" :linesDistance="150" :moveSpeed="3" :hoverEffect="true" hoverMode="grab" :clickEffect="true" clickMode="push"> </vue-particles>
     </v-content>
 </v-app>
 </template>
@@ -79,9 +80,13 @@
 
 <script>
 import mixin from '../components/mixins'
+import themeSwitch from '../components/miniComp/switchTheme'
 
 export default {
     mixins: [mixin],
+    components:{
+        themeSwitch
+    },
     props: {
         source: String,
     },
@@ -118,6 +123,7 @@ export default {
             this.wait = true
             this.loginValid = false;
             // Call login API 
+
             //if (true) { // if CallBack and exist
             setTimeout(() => {
                 var rand = this.getRandomInt(2);
@@ -144,12 +150,17 @@ export default {
     mounted() {
         this.cardShow = true;
     },
+    created() {
+        // console.log(this.$store.state.apiToken)
+        //var api = "/api/posts/1"
+        this.axios.get("http://localhost:8080/gists").then((response) => {
+           console.log(response)
+        })
+    },
 }
 </script>
 
 <style lang="scss" scoped>
-@import '../css/animation.css';
-
 .gradient {
     &.blue-red {
         background: rgb(0, 155, 255);
