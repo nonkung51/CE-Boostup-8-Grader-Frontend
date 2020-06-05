@@ -1,9 +1,9 @@
 <template>
-<v-sheet class="home">
-    <v-app-bar style="z-index:6 !important;" color="white" app clipped-left>
+<v-sheet class="home ">
+    <v-app-bar style="z-index:6 !important;" class="scale-in-center" color="white" app clipped-left>
         <!-- Title -->
 
-        <v-toolbar class="elevation-0" color="white" >
+        <v-toolbar class="elevation-0" color="white">
             <v-avatar :tile="true">
                 <img :src="require('@/assets/logo.png')" alt="logo">
             </v-avatar>
@@ -28,13 +28,13 @@
             <v-tab href="https://stackoverflow.com/">Learn</v-tab>
         </v-tabs>
         <v-spacer></v-spacer>
-        <v-switch v-model="$vuetify.theme.dark" color="white" hide-details></v-switch>
-        <v-menu offset-y offset-x="50" transition="slide-x-transition">
+        <themeSwitch></themeSwitch>
+        <v-menu offset-y transition="slide-x-transition">
             <template v-slot:activator="{ on }">
-                <v-chip v-on="on" style="border-radius:50px !important;width:250px;"  class="pa-5 elevation-3" pill outlined color="black" @click="{}">
+                <v-chip v-on="on" style="border-radius:50px !important;width:250px;" class="pa-5 elevation-3" pill outlined color="black" @click="{}">
                     <v-badge bordered bottom color="green accent-4" dot offset-x="15" offset-y="10">
-                        <v-avatar left>
-                            <v-img @click.stop="mini = !mini" src="https://cdn.vuetifyjs.com/images/profiles/marcus.jpg"></v-img>
+                        <v-avatar v-on="on" left>
+                            <v-img src="https://cdn.vuetifyjs.com/images/profiles/marcus.jpg"></v-img>
                         </v-avatar>
                     </v-badge>
                     {{user_Name + " Love rung Tu"}}
@@ -60,7 +60,7 @@
                 <v-list>
                     <v-list-item :ripple="false">
                         <v-list-item-action>
-                            <v-icon >account_box</v-icon>
+                            <v-icon>account_box</v-icon>
                         </v-list-item-action>
                         <v-list-item-subtitle>
                             <v-btn block dark to="/Home/profile">Profile</v-btn>
@@ -86,14 +86,14 @@
 </template>
 
 <script>
-import mixin from '../components/mixins.vue'
-
+import themeSwitch from '../components/miniComp/switchTheme'
+import mixin from '../components/mixins'
 // @ is an alias to /src
 export default {
     name: 'Home',
     mixins: [mixin],
     components: {
-
+        themeSwitch
     },
     data() {
         return {
@@ -154,5 +154,8 @@ export default {
 <style>
 a {
     text-decoration-line: none !important;
+}
+.v-tabs-slider-wrapper{
+    height: 3px !important;
 }
 </style>

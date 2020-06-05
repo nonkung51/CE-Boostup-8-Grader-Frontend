@@ -237,6 +237,3 @@ export default {
 }
 </script>
 
-<style lang="sass" scoped>
-@import '../css/animation.css'
-</style>

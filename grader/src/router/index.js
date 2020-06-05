@@ -54,8 +54,15 @@ const router = new VueRouter({
 })
 
 router.beforeEach((to, from, next) => {
-    var existPath = []
-        // get all path
+    var noAuthPath = ['/api', '/gists']
+
+    if (noAuthPath.includes(to.path)) {
+        next();
+        return 0;
+    }
+
+    var existPath = [];
+    // get all path
     routes.forEach(el => {
         existPath.push(el.path)
         if (el.children)
@@ -63,6 +70,7 @@ router.beforeEach((to, from, next) => {
                 existPath.push(child.path)
             })
     })
+
 
     if (to.name != 'Auth') {
         if (!Vue.$cookies.get('user')) {
@@ -82,8 +90,6 @@ router.beforeEach((to, from, next) => {
         next('/');
     }
 
-    to;
-    from;
     next();
 });
 
