@@ -119,10 +119,16 @@ export default {
         validate() {
             this.$refs.form.validate()
         },
-        login() {
+        async login() {
             this.wait = true
             this.loginValid = false;
             // Call login API 
+            const res = await this.axios.post("http://localhost:5000/api/v1/login/", {
+                "username": this.userFill,
+                "password": this.passFill,
+            });
+            console.log(res.data);
+            // Add token to Vuex
 
             //if (true) { // if CallBack and exist
             setTimeout(() => {
@@ -153,9 +159,9 @@ export default {
     created() {
         // console.log(this.$store.state.apiToken)
         //var api = "/api/posts/1"
-        this.axios.get("http://localhost:8080/gists").then((response) => {
-           console.log(response)
-        })
+        // this.axios.get("http://localhost:8080/gists").then((response) => {
+        //    console.log(response)
+        // })
     },
 }
 </script>

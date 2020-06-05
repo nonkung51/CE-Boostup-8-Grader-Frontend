@@ -1,21 +1,21 @@
-  import Vue from 'vue'
-  import Vuex from 'vuex'
-  import question from './modules/question'
-  // import products from './modules/products'
-  // import createLogger from '../../../src/plugins/logger'
+import Vue from 'vue';
+import Vuex from 'vuex';
+import question from './modules/question';
+// import products from './modules/products'
+// import createLogger from '../../../src/plugins/logger'
 
-  Vue.use(Vuex)
+Vue.use(Vuex);
 
-  const debug = process.env.NODE_ENV !== 'production'
+const debug = process.env.NODE_ENV !== 'production';
 
-  export default new Vuex.Store({
-      state: {
-          apiToken: "12345"
-      },
-      modules: {
-          question
-          // products
-      },
-      strict: debug,
-      //   plugins: debug ? [createLogger()] : []
-  })
+export default new Vuex.Store({
+	state: {
+		apiToken: '12345',
+	},
+	modules: {
+		question,
+		// products
+	},
+	strict: debug,
+	//   plugins: debug ? [createLogger()] : []
+});
