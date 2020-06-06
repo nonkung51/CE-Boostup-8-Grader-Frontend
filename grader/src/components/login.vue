@@ -156,11 +156,7 @@ export default {
         this.cardShow = true;
     },
     created() {
-        // console.log(this.$store.state.apiToken)
-        //var api = "/api/posts/1"
-        this.axios.get("http://localhost:8080/gists").then((response) => {
-            console.log(response)
-        })
+        this.$store.state.apiToken = "something"
     },
 }
 </script>
