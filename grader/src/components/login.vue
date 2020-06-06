@@ -1,7 +1,7 @@
 <template>
 <v-app id="inspire">
     <v-sheet class="scaleOver" :class="scaleover" height="200" width="200" color="#42b983"></v-sheet>
-    <themeSwitch style="position:absolute;right:0;top:0;z-index:4;" ></themeSwitch>
+    <themeSwitch style="position:absolute;right:0;top:0;z-index:4;"></themeSwitch>
     <v-content>
         <v-container style="position:absolute;background:transparent;" fill-height fluid>
             <v-row align="center" justify="center">
@@ -84,7 +84,7 @@ import themeSwitch from '../components/miniComp/switchTheme'
 
 export default {
     mixins: [mixin],
-    components:{
+    components: {
         themeSwitch
     },
     props: {
@@ -123,22 +123,27 @@ export default {
             this.wait = true
             this.loginValid = false;
             // Call login API 
-
+            this.axios.post("http://localhost:5000/api/v1/login/", {
+                "username": "test",
+                "password": "passwordd",
+            }).then(response => {
+                console.log(response)
+            })
             //if (true) { // if CallBack and exist
-            setTimeout(() => {
-                var rand = this.getRandomInt(2);
-                if (rand == 1) { // login success
-                    this.scaleover = "scale-over"
-                    setTimeout(() => {
-                        this.$cookies.set('user', this.userFill);
-                        this.$router.push('/Home')
-                    }, 2000)
-                } else { // error
-                    this.loginValid = true;
-                    this.loginErrorMessage = "No User Found "
-                }
-                this.wait = false
-            }, 2000)
+            // setTimeout(() => {
+            //     var rand = this.getRandomInt(2);
+            //     if (rand == 1) { // login success
+            //         this.scaleover = "scale-over"
+            //         setTimeout(() => {
+            //             this.$cookies.set('user', this.userFill);
+            //             this.$router.push('/Home')
+            //         }, 2000)
+            //     } else { // error
+            //         this.loginValid = true;
+            //         this.loginErrorMessage = "No User Found "
+            //     }
+            //     this.wait = false
+            // }, 2000)
             // }
         },
         loadingClose() {
@@ -154,7 +159,7 @@ export default {
         // console.log(this.$store.state.apiToken)
         //var api = "/api/posts/1"
         this.axios.get("http://localhost:8080/gists").then((response) => {
-           console.log(response)
+            console.log(response)
         })
     },
 }

@@ -12,6 +12,11 @@
       state: {
           apiToken: "12345"
       },
+      methods: {
+          setApiToken(token) {
+              state.apiToken = token
+          }
+      },
       modules: {
           question
           // products
