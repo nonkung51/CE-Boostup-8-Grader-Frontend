@@ -3,8 +3,8 @@
     <v-card class="elevation-10" style="border-radius:20px  !important;">
         <v-data-iterator :items="filtered" :items-per-page.sync="itemsPerPage" :page="page" :search="search" :sort-by="sortBy.toLowerCase()" :sort-desc="sortDesc" hide-default-footer>
             <!-- search bar etc. -->
-            <template v-slot:header >
-                <v-toolbar class="mb-2 elevation-5 task-rounded-top " style=""  color="#42b983" rounded dark flat>
+            <template v-slot:header>
+                <v-toolbar class="mb-2 elevation-5 task-rounded-top " style="" color="#42b983" rounded dark flat>
                     <v-toolbar-title class="mr-5">All Questions </v-toolbar-title>
                     <v-divider vertical></v-divider>
                     <!-- Search Bar -->
@@ -37,7 +37,7 @@
             <!-- table data -->
             <template v-slot:default="props">
                 <v-row class="pa-5">
-                    <v-col v-for="item in props.items" items-per-page="8" :key="item.name" cols="12" sm="6" md="4" lg="3">
+                    <v-col v-for="item in props.items" items-per-page="8" :key="item.title" cols="12" sm="6" md="4" lg="3">
                         <v-hover v-slot:default="{ hover }" close-delay="50">
                             <v-card class="swing-in-top-bck" v-ripple style="border-radius:20px;" :elevation="hover ? 16 : 2" :to="'/Home/coding/'+item.id">
                                 <v-card-title class="subheading font-weight-bold">{{ item.id }} | {{ item.title }}</v-card-title>
@@ -45,7 +45,9 @@
                                 <v-divider :color="item.status_col"></v-divider>
                                 <v-list-item>
                                     <v-list-item-content>rank</v-list-item-content>
-                                    <v-list-item-content class="align-end">{{ item.rank }}</v-list-item-content>
+                                    <v-list-item-content >
+                                        <v-rating :value="item.rank" style="flex: none;"  color="amber" dense half-increments readonly size="20"></v-rating>
+                                    </v-list-item-content>
                                 </v-list-item>
 
                                 <v-list dense>
@@ -127,11 +129,81 @@ export default {
     components: {},
     data() {
         return {
-            tasks: [
+            tasks: [{
+                    title: "A+B",
+                    id: "1",
+                    rank: 2,
+                    passed: "3234",
+                    by: "Glairy",
+                    status: "Passed",
+                    status_col: "green", // front-end render
+                },
+                {
+                    title: "Grading",
+                    id: "2",
+                    rank: 3,
+                    passed: "3192",
+                    by: "Glairy",
+                    status: "Wrong",
+                    status_col: "red", // front-end render
+                },
+                {
+                    title: "Min-Max",
+                    id: "3",
+                    rank: 1,
+                    passed: "3143",
+                    by: "Glairy",
+                    status: "Idle",
+                    status_col: "grey", // front-end render
+                },
+                {
+                    title: "Matrix Addition",
+                    id: "4",
+                    rank: 5,
+                    passed: "3110",
+                    by: "Glairy",
+                    status: "Idle",
+                    status_col: "grey", // front-end render
+                },
+                {
+                    title: "A+B",
+                    id: "1",
+                    rank: 2,
+                    passed: "3234",
+                    by: "Glairy",
+                    status: "Passed",
+                    status_col: "green", // front-end render
+                },
+                {
+                    title: "Grading",
+                    id: "2",
+                    rank: 1,
+                    passed: "3192",
+                    by: "Glairy",
+                    status: "Wrong",
+                    status_col: "red", // front-end render
+                },
+                {
+                    title: "Min-Max",
+                    id: "3",
+                    rank: 0,
+                    passed: "3143",
+                    by: "Glairy",
+                    status: "Idle",
+                    status_col: "grey", // front-end render
+                },
+                {
+                    title: "Matrix Addition",
+                    id: "4",
+                    rank: 0,
+                    passed: "3110",
+                    by: "Glairy",
+                    status: "Idle",
+                    status_col: "grey", // front-end render
+                },
             ],
             sortBy: 'rank',
             page: 1,
-
             sortDesc: false,
             search: '',
             itemsPerPage: 4,
@@ -164,10 +236,9 @@ export default {
         },
     },
     created() {
-        this.axios.get('http://localhost:5000/api/v1/questions').then(response => {
-            this.tasks = response.data.data;
-        })
+        // this.axios.get('http://localhost:5000/api/v1/questions').then(response => {
+        //     this.tasks = response.data.data;
+        // })
     }
 }
 </script>
-

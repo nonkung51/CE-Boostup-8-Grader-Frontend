@@ -1,6 +1,6 @@
 module.exports = {
     "transpileDependencies": [
-        "vuetify"
+        "vuetify", "vuex-persist"
     ],
     // dev mode
     devServer: {
@@ -36,7 +36,7 @@ module.exports = {
         config
             .plugin('html')
             .tap(args => {
-                args[0].title = 'CE-BU | 8'
+                args[0].title = 'CE-BoostUp 8'
                 return args
             })
     }

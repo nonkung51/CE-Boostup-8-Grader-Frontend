@@ -1,6 +1,6 @@
 <template>
 <!-- Two-way Data-Binding -->
-<v-card style="border-radius: 10px;" class="mt-2 pa-5 elevation-5">
+<v-card style="border-radius: 0px;" class="pa-5">
     <v-system-bar color="transparent">
         <v-icon color="green lighten-1">mdi-checkbox-blank-circle</v-icon>
 
@@ -62,6 +62,10 @@
 
         <v-col>
             <v-row class="ma-0" justify="end">
+
+                <v-btn outlined class="mr-5">
+                    <v-checkbox label="Compile With Sample" color="orange darken-1" class="ma-0" hide-details v-model="compile.withSample"></v-checkbox>
+                </v-btn>
                 <!-- Complie sample -->
                 <v-btn color="warning" class="mr-5" raised @click.end="Compiling()">
                     <v-icon left>mdi-code-tags-check</v-icon> Compile
@@ -78,33 +82,40 @@
                     </v-btn>
                 </v-snackbar>
 
-                <!-- compile test -->
-                <v-bottom-sheet v-model="compile">
-                    <v-sheet class="text-center">
-                        <v-col>
-                            <v-btn class="mt-1" text color="red" @click="compile = !compile">close</v-btn>
-                        </v-col>
-                        <v-card class="pa-5">
-                            <v-row>
-                                <v-col cols="2">
-                                    <v-btn block fill-height outlined class="mt-1" text color="info"><strong>Result</strong></v-btn>
-                                </v-col>
-                                <v-col>
-                                    <v-row vertical align="center" justify="start">
-                                        <v-btn text v-for="(i,index) in compile_Status.length" :key="index" :loading="!compile_Status[index].state">
-                                            <v-icon v-if="compile_Status[index].result" color="success">mdi-check-bold</v-icon>
-                                            <v-icon v-else color="error">mdi-close</v-icon>
-                                        </v-btn>
-                                    </v-row>
-                                </v-col>
-                            </v-row>
-                        </v-card>
-                    </v-sheet>
-                </v-bottom-sheet>
             </v-row>
         </v-col>
-
     </v-row>
+    <v-divider></v-divider>
+    <v-sheet class="text-left mt-2 elevation-3" v-show="compile.show">
+        <v-card class="pa-5" height="300">
+            <v-skeleton-loader :loading="compile.skeleton"  height="100%" type="table">
+
+                <v-toolbar class="elevation-0">
+                    <v-col cols="2">
+                        <v-btn block outlined class="mt-1" id="result" color="info"><strong>Result</strong></v-btn>
+                    </v-col>
+                </v-toolbar>
+
+                <v-tabs show-arrows grow v-model="compile.tabSelect" slider-color="primary">
+                    <template v-if="compile.withSample">
+                        <v-tab v-for="(i,index) in compile.compile_Status.length" :key="index">
+                            <v-btn text :ripple="false" :loading="!compile.compile_Status[index].state">
+                                Case : {{index + 1}}
+                                <v-icon v-if="compile.compile_Status[index].result" color="success" right>mdi-check-bold</v-icon>
+                                <v-icon v-else color="error" right>mdi-close</v-icon>
+                            </v-btn>
+                        </v-tab>
+                    </template>
+                    <v-tabs-items v-model="compile.tabSelect">
+                        <v-tab-item v-for="(i,index) in compile.compile_Status.length" :key="index">
+                            <v-textarea height="100%" class="mt-2 elevation-2" label="Error Logs" readonly style="color:green" color="success" outlined hide-details auto-grow v-model="compile.errorText[index]">
+                            </v-textarea>
+                        </v-tab-item>
+                    </v-tabs-items>
+                </v-tabs>
+            </v-skeleton-loader>
+        </v-card>
+    </v-sheet>
 </v-card>
 
 <!-- Or manually control the data synchronization -->
@@ -153,28 +164,34 @@ export default {
             uploadError_Message: "",
             ///////////////
             // compile //
-            compile: false,
-            compile_Status: [{
-                    state: false,
-                    result: "idle"
-                },
-                {
-                    state: false,
-                    result: "idle"
-                },
-                {
-                    state: false,
-                    result: "idle"
-                },
-                {
-                    state: false,
-                    result: "idle"
-                },
-                {
-                    state: false,
-                    result: "idle"
-                }
-            ], // length depend on question's sample
+            compile: {
+                withSample: false,
+                show: false,
+                compile_Status: [{
+                        state: false,
+                        result: "idle"
+                    },
+                    {
+                        state: false,
+                        result: "idle"
+                    },
+                    {
+                        state: false,
+                        result: "idle"
+                    },
+                    {
+                        state: false,
+                        result: "idle"
+                    },
+                    {
+                        state: false,
+                        result: "idle"
+                    }
+                ],
+                errorText: ["Error Sample 1\nError #1\nError#2", "Error Sample 2\nError #1\nError#2", "Error Sample 3\nError #1\nError#2", "Error Sample 4\nError #1\nError#2", "Error Sample 5\nError #1\nError#2"],
+                tabSelect: 0,
+                skeleton: true
+            } // length depend on question's sample
         }
     },
     computed: {
@@ -183,8 +200,8 @@ export default {
         },
         Compile() {
             var arr = []
-            for (var i = 0; i < this.compile_Status.length; i++) {
-                arr.push(this.compile_Status[i] ? false : true)
+            for (var i = 0; i < this.compile.compile_Status.length; i++) {
+                arr.push(this.compile.compile_Status[i] ? false : true)
             }
             return arr;
         },
@@ -240,14 +257,14 @@ export default {
         },
         delay(i) {
             setTimeout(() => {
-                this.compile_Status[i].state = true
+                this.compile.compile_Status[i].state = true
             }, this.getRandomInt(5000));
         },
         Compiling() {
             // call bottom sheet
-            this.compile = true
+            this.compile.show = true
 
-            this.compile_Status = [{
+            this.compile.compile_Status = [{
                     state: false,
                     result: "idle"
                 },
@@ -268,17 +285,27 @@ export default {
                     result: "idle"
                 }
             ]
-            for (var i = 0; i < this.compile_Status.length; i++) {
+
+            // wait for response  3 sec
+            // call api here 
+            // this.axios.post('url to submit',{body} , {timeout : 3 }).then(res => {})
+
+            // simulator
+            setTimeout(() => {
+                this.compile.skeleton = false
+            }, 2000)
+
+            for (var i = 0; i < this.compile.compile_Status.length; i++) {
                 var res = this.getRandomInt(3)
                 switch (res) {
                     case 0:
-                        this.compile_Status[i].result = false
+                        this.compile.compile_Status[i].result = false
                         break
                     case 1:
-                        this.compile_Status[i].result = true
+                        this.compile.compile_Status[i].result = true
                         break
                     case 2:
-                        this.compile_Status[i].result = true
+                        this.compile.compile_Status[i].result = true
                         break
                 }
                 this.delay(i);
@@ -307,4 +334,5 @@ export default {
 .CodeMirror-scroll {
     text-align: left !important;
 }
+
 </style>
