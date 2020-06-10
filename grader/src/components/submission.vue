@@ -14,7 +14,7 @@
                             <v-spacer></v-spacer>
                             <!-- Diff filter -->
                             <v-col cols="6">
-                                <v-range-slider hide-details label="Difficulty" v-model="difficulty_range" thumb-color="black" thumb-label="always" min="0" max="10"></v-range-slider>
+                                <v-range-slider hide-details label="rank" v-model="rank_range" thumb-color="black" thumb-label="always" min="0" max="10"></v-range-slider>
                             </v-col>
                             <v-spacer></v-spacer>
                             <v-col>
@@ -35,16 +35,20 @@
             <!-- table data -->
             <template v-slot:default="props">
                 <v-row class="pa-5">
-                    <v-col v-for="item in props.items" items-per-page="8" :key="item.name" cols="12" sm="6" md="4" lg="3">
+                    <v-col v-for="item in props.items" items-per-page="8" :key="item.title" cols="12" sm="6" md="4" lg="3">
                         <v-hover v-slot:default="{ hover }" close-delay="50">
                             <v-card class="slide-in-elliptic-top-fwd" v-ripple style="border-radius:20px;" :elevation="hover ? 16 : 2" :to="'/Home/coding/'+item.id">
-                                <v-card-title class="subheading font-weight-bold">{{ item.id }} | {{ item.name }}</v-card-title>
+                                <v-card-title class="subheading font-weight-bold">{{ item.id }} | {{ item.title }}</v-card-title>
 
                                 <v-divider :color="item.status_col"></v-divider>
-                                <v-list-item>
-                                    <v-list-item-content>Difficulty</v-list-item-content>
-                                    <v-list-item-content class="align-end">{{ item.difficulty }}</v-list-item-content>
-                                </v-list-item>
+                                <v-list dense>
+                                    <v-list-item>
+                                        <v-list-item-content>rank</v-list-item-content>
+                                        <v-list-item-content class="align-end">
+                                            <v-rating style="flex: none;" :value="item.rank" color="amber" dense half-increments readonly size="20"></v-rating>
+                                        </v-list-item-content>
+                                    </v-list-item>
+                                </v-list>
 
                                 <v-list dense>
                                     <v-list-item>
@@ -134,9 +138,9 @@ export default {
     data() {
         return {
             tasks: [{
-                    name: "A+B",
+                    title: "A+B",
                     id: "1",
-                    difficulty: "0",
+                    rank: 0,
                     passed: "3234",
                     by: "Glairy",
                     status: "Passed",
@@ -144,9 +148,9 @@ export default {
                     list: "PPPPPPP"
                 },
                 {
-                    name: "Grading",
+                    title: "Grading",
                     id: "2",
-                    difficulty: "0",
+                    rank: 1,
                     passed: "3192",
                     by: "Glairy",
                     status: "Wrong",
@@ -154,9 +158,9 @@ export default {
                     list: "PPPPPPXTTTTT"
                 },
                 {
-                    name: "Min-Max",
+                    title: "Min-Max",
                     id: "3",
-                    difficulty: "0",
+                    rank: 2,
                     passed: "3143",
                     by: "Glairy",
                     status: "Processing",
@@ -164,9 +168,9 @@ export default {
                     list: null
                 },
                 {
-                    name: "Matrix Addition",
+                    title: "Matrix Addition",
                     id: "4",
-                    difficulty: "0",
+                    rank: 3,
                     passed: "3110",
                     by: "Glairy",
                     status: "Processing",
@@ -175,13 +179,13 @@ export default {
                 },
 
             ],
-            sortBy: 'difficulty',
+            sortBy: 'rank',
             page: 1,
             sortDesc: false,
             search: '',
             itemsPerPage: 4,
             itemsPerPageArray: [4, 8, 12],
-            difficulty_range: [0, 10]
+            rank_range: [0, 10]
         }
     },
     computed: {
@@ -191,8 +195,8 @@ export default {
         },
         filtered() {
             return this.tasks.filter((el) => {
-                var diff = el.difficulty
-                return (diff >= this.difficulty_range[0] && diff <= this.difficulty_range[1]);
+                var diff = el.rank
+                return (diff >= this.rank_range[0] && diff <= this.rank_range[1]);
             });
         },
     },
@@ -210,4 +214,3 @@ export default {
     },
 }
 </script>
-

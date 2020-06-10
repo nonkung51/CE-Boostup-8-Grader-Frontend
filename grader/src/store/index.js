@@ -1,18 +1,23 @@
 import Vue from 'vue';
 import Vuex from 'vuex';
+import VuexPersistence from 'vuex-persist'
 //import question from './modules/question';
-// import products from './modules/products'
-// import createLogger from '../../../src/plugins/logger'
+//import user from './modules/user';
+
 
 Vue.use(Vuex);
 
 const debug = process.env.NODE_ENV !== 'production';
 
+
+
 export default new Vuex.Store({
     state: {
+        // usage console.log(this.$store.state.apiToken)
         apiToken: "12345"
     },
     mutations: {
+        // usage this.$store.commit('setAPiToken',param1)
         setApiToken(state, token) {
             state.apiToken = token
         }
@@ -22,5 +27,5 @@ export default new Vuex.Store({
         // products
     },
     strict: debug,
-    //   plugins: debug ? [createLogger()] : []
+    plugins: [new VuexPersistence().plugin]
 })

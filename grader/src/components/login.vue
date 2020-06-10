@@ -1,13 +1,13 @@
 <template>
 <v-app id="inspire">
-    <v-sheet class="scaleOver" :class="scaleover" height="200" width="200" color="#42b983"></v-sheet>
+    <scaleOver :scaleover="scaleover"></scaleOver>
     <themeSwitch style="position:absolute;right:0;top:0;z-index:4;"></themeSwitch>
     <v-content>
-        <v-container style="position:absolute;background:transparent;" fill-height fluid>
+        <v-container style="background:transparent;position:absolute;" fill-height fluid>
             <v-row align="center" justify="center">
                 <v-col cols="12" sm="8" md="4">
                     <v-fab-transition>
-                        <v-card v-show="cardShow" class="elevation-12 fab-trans">
+                        <v-card v-show="cardShow" class="elevation-12 fab-trans" style="z-index:4">
                             <!-- header -->
                             <v-toolbar color="gradient blue-red" dark text>
                                 <v-toolbar-title>Login form</v-toolbar-title>
@@ -58,8 +58,8 @@
 
                 </v-col>
             </v-row>
+            <vue-particles style="height:100%;position:absolute;width:100%" color="#dedede" :particleOpacity="0.7" :particlesNumber="80" shapeType="polygon" :particleSize="4" linesColor="#dedede" :linesWidth="1" :lineLinked="true" :lineOpacity="0.4" :linesDistance="150" :moveSpeed="3" :hoverEffect="true" hoverMode="grab" :clickEffect="true" clickMode="push"> </vue-particles>
         </v-container>
-        <vue-particles style="height:100%" color="#dedede" :particleOpacity="0.7" :particlesNumber="80" shapeType="polygon" :particleSize="4" linesColor="#dedede" :linesWidth="1" :lineLinked="true" :lineOpacity="0.4" :linesDistance="150" :moveSpeed="3" :hoverEffect="true" hoverMode="grab" :clickEffect="true" clickMode="push"> </vue-particles>
     </v-content>
 </v-app>
 </template>
@@ -69,23 +69,18 @@
     transition: all 1.2s ease-in-out !important;
 }
 
-.scaleOver {
-    border-radius: 50%;
-    position: absolute;
-    top: -200px;
-    right: -200px;
-    z-index: 10;
-}
 </style>
 
 <script>
 import mixin from '../components/mixins'
 import themeSwitch from '../components/miniComp/switchTheme'
+import scaleOver from '../components/miniComp/scaleOver'
 
 export default {
     mixins: [mixin],
     components: {
-        themeSwitch
+        themeSwitch,
+        scaleOver
     },
     props: {
         source: String,
@@ -123,27 +118,27 @@ export default {
             this.wait = true
             this.loginValid = false;
             // Call login API 
-            this.axios.post("http://localhost:5000/api/v1/login/", {
-                "username": "test",
-                "password": "passwordd",
-            }).then(response => {
-                console.log(response)
-            })
+            // this.axios.post("http://localhost:5000/api/v1/login/", {
+            //     "username": "test",
+            //     "password": "passwordd",
+            // }).then(response => {
+            //     console.log(response)
+            // })
             //if (true) { // if CallBack and exist
-            // setTimeout(() => {
-            //     var rand = this.getRandomInt(2);
-            //     if (rand == 1) { // login success
-            //         this.scaleover = "scale-over"
-            //         setTimeout(() => {
-            //             this.$cookies.set('user', this.userFill);
-            //             this.$router.push('/Home')
-            //         }, 2000)
-            //     } else { // error
-            //         this.loginValid = true;
-            //         this.loginErrorMessage = "No User Found "
-            //     }
-            //     this.wait = false
-            // }, 2000)
+            setTimeout(() => {
+                var rand = this.getRandomInt(2);
+                if (rand == 1) { // login success
+                    this.scaleover = "scale-over"
+                    setTimeout(() => {
+                        this.$cookies.set('user', this.userFill);
+                        this.$router.push('/Home')
+                    }, 2000)
+                } else { // error
+                    this.loginValid = true;
+                    this.loginErrorMessage = "No User Found "
+                }
+                this.wait = false
+            }, 2000)
             // }
         },
         loadingClose() {
@@ -156,7 +151,7 @@ export default {
         this.cardShow = true;
     },
     created() {
-        this.$store.state.apiToken = "something"
+        this.$store.commit('setApiToken', "something")
     },
 }
 </script>

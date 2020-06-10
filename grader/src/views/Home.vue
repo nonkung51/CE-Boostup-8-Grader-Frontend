@@ -1,6 +1,7 @@
 <template>
 <v-sheet class="home ">
-    <v-app-bar style="z-index:6 !important;" class="scale-in-center" color="white" app clipped-left>
+    <scaleOver :scaleover="scaleover"></scaleOver>
+    <v-app-bar style="z-index:6 !important;" color="white" app clipped-left>
         <!-- Title -->
 
         <v-toolbar class="elevation-0" color="white">
@@ -37,7 +38,7 @@
                             <v-img src="https://cdn.vuetifyjs.com/images/profiles/marcus.jpg"></v-img>
                         </v-avatar>
                     </v-badge>
-                    {{user_Name + " Love rung Tu"}}
+                    {{user_Name}}
                 </v-chip>
             </template>
             <v-card width="300">
@@ -47,8 +48,8 @@
                             <v-img src="https://cdn.vuetifyjs.com/images/profiles/marcus.jpg"></v-img>
                         </v-list-item-avatar>
                         <v-list-item-content>
-                            <v-list-item-title>John Leider</v-list-item-title>
-                            <v-list-item-subtitle>john@vuetifyjs.com</v-list-item-subtitle>
+                            <v-list-item-title>Arthur Marcus</v-list-item-title>
+                            <v-list-item-subtitle>Marcus@kmitl.ac.th</v-list-item-subtitle>
                         </v-list-item-content>
                         <v-list-item-action>
                             <v-btn icon @click="menu = false">
@@ -87,13 +88,15 @@
 
 <script>
 import themeSwitch from '../components/miniComp/switchTheme'
+import scaleOver from '../components/miniComp/scaleOver'
 import mixin from '../components/mixins'
 // @ is an alias to /src
 export default {
     name: 'Home',
     mixins: [mixin],
     components: {
-        themeSwitch
+        themeSwitch,
+        scaleOver
     },
     data() {
         return {
@@ -119,11 +122,16 @@ export default {
             ],
             login: true,
             drawerToggle: true,
+            scaleover: ""
         }
     },
     created() {
         var cookies = this.$cookies;
         this.user_Name = cookies.get('user');
+
+    },
+    mounted() {
+        this.scaleover = "scale-over-out"
     },
 }
 </script>
@@ -155,7 +163,8 @@ export default {
 a {
     text-decoration-line: none !important;
 }
-.v-tabs-slider-wrapper{
+
+.v-tabs-slider-wrapper {
     height: 3px !important;
 }
 </style>
