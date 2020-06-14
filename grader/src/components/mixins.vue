@@ -9,7 +9,8 @@ export default {
     }),
     methods: {
         logout() {
-            this.$cookies.remove('user');
+            //this.$cookies.remove('user');
+            this.$store.commit('user/clear')
             this.$router.push('/auth')
         },
         getRandomInt(max) {

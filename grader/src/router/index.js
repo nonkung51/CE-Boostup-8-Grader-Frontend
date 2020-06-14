@@ -1,23 +1,24 @@
 import Vue from 'vue'
 import VueRouter from 'vue-router'
 import Home from '../views/Home.vue'
+import store from '../store/index.js'
 
 Vue.use(VueRouter)
 
 const routes = [{
         path: '/',
-        name: '/',
-        component: Home,
+        name: 'Index',
+        component: Home
     },
     {
         path: '/Home',
         name: 'Home',
         component: Home,
         children: [{
-                path: '/Home/coding/:task_id',
-                name: 'Coding',
+                path: '/Home/dashboard',
+                name: 'Dashboard',
                 component: () =>
-                    import ('../views/Coding.vue')
+                    import ('../views/Dashboard.vue')
             },
             {
                 path: '/Home/submission',
@@ -27,9 +28,20 @@ const routes = [{
             },
             {
                 path: '/Home/task',
-                name: 'Task',
                 component: () =>
-                    import ('../views/Task.vue')
+                    import ('../views/Task.vue'),
+                children: [{
+                        path: '',
+                        component: () =>
+                            import ('../views/Tasks.vue'),
+                    },
+                    {
+                        path: ':task_id',
+                        name: 'Coding',
+                        component: () =>
+                            import ('../views/Coding.vue'),
+                    },
+                ],
             },
             {
                 path: '/Home/profile',
@@ -37,6 +49,10 @@ const routes = [{
                 component: () =>
                     import ('../views/Profile.vue')
             },
+            {
+                path: '/Home/learn',
+                beforeEnter() { location.href = 'https://stackoverflow.com' }
+            }
         ]
     },
     {
@@ -64,30 +80,37 @@ router.beforeEach((to, from, next) => {
     var existPath = [];
     // get all path
     routes.forEach(el => {
+        // root
         existPath.push(el.path)
         if (el.children)
+        // root child
             el.children.forEach(child => {
-                existPath.push(child.path)
-            })
+            existPath.push(child.path);
+            // root child child
+            if (child.children)
+                child.children.forEach(c => {
+                    existPath.push(c.path)
+                })
+        })
     })
 
 
+    var cookie = store.state.user.data
     if (to.name != 'Auth') {
-        if (!Vue.$cookies.get('user')) {
+        if (!cookie.username) {
             next('/auth');
             return 0;
         }
     } else {
         if (to.name == 'Auth') // 
-            if (Vue.$cookies.get('user')) {
+            if (cookie.username) {
             next(from.path);
             return 0;
         }
     }
 
-
     if (to.name != "Coding" && !existPath.includes(to.path)) {
-        next('/');
+        next('/Home/dashboard');
     }
 
     next();
