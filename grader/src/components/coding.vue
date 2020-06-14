@@ -14,13 +14,17 @@
                     <v-icon v-else> mdi-chevron-left</v-icon>
                 </v-tab>
                 <v-tabs-items style="height:100%" v-model="rightNav.tab_select">
+                    <!-- PDF -->
                     <v-tab-item>
                         <iframe style="width:100%;height:100%" :src="question.pdf_url"></iframe>
                     </v-tab-item>
+
+                    <!-- Details -->
                     <v-tab-item>
                         <v-card tile class="pa-3 bordered-left-15-indigo">
                             <v-card-title class="display-1 mb-1" primary-title>
-                                <strong> {{question.id}} | {{question.title}}</strong>
+                                <!-- Suppose to be this -> <strong> {{question.id}} | {{question.title}}</strong> -->
+                                <strong> {{task_id}} | {{question.title}}</strong>
                                 <v-col cols="1"></v-col>
                                 <v-col cols="3">
                                     <v-row justify="space-around">
@@ -31,7 +35,7 @@
                             </v-card-title>
                             <v-card-subtitle class="pa-0">
                                 <v-col cols="3" class="pa-0">
-                                <strong>Author : {{question.by}}</strong>
+                                    <strong>Author : {{question.by}}</strong>
                                 </v-col>
                             </v-card-subtitle>
                         </v-card>
@@ -113,6 +117,7 @@ export default {
         }
     },
     created() {
+        // API Call question by id 
         this.task_id = this.$route.params.task_id;
     },
     methods: {

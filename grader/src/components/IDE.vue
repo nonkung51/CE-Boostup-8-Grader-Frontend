@@ -41,7 +41,6 @@
     <codemirror v-model="ide.code" :style="ideStyle" :options="cmOptions" />
     <!-- action button -->
     <v-row full-width justify="space-between" align="center">
-
         <v-col>
             <v-row class="ma-0" justify="start">
                 <!-- Upload local Code -->
@@ -62,7 +61,6 @@
 
         <v-col>
             <v-row class="ma-0" justify="end">
-
                 <v-btn outlined class="mr-5">
                     <v-checkbox label="Compile With Sample" color="orange darken-1" class="ma-0" hide-details v-model="compile.withSample"></v-checkbox>
                 </v-btn>
@@ -88,7 +86,7 @@
     <v-divider></v-divider>
     <v-sheet class="text-left mt-2 elevation-3" v-show="compile.show">
         <v-card class="pa-5" height="300">
-            <v-skeleton-loader :loading="compile.skeleton"  height="100%" type="table">
+            <v-skeleton-loader :loading="compile.skeleton" height="100%" type="table">
 
                 <v-toolbar class="elevation-0">
                     <v-col cols="2">
@@ -98,8 +96,8 @@
 
                 <v-tabs show-arrows grow v-model="compile.tabSelect" slider-color="primary">
                     <template v-if="compile.withSample">
-                        <v-tab v-for="(i,index) in compile.compile_Status.length" :key="index">
-                            <v-btn text :ripple="false" :loading="!compile.compile_Status[index].state">
+                        <v-tab  v-for="(i,index) in compile.compile_Status.length" :key="index">
+                            <v-btn text  :ripple="false" :loading="!compile.compile_Status[index].state">
                                 Case : {{index + 1}}
                                 <v-icon v-if="compile.compile_Status[index].result" color="success" right>mdi-check-bold</v-icon>
                                 <v-icon v-else color="error" right>mdi-close</v-icon>
@@ -108,7 +106,7 @@
                     </template>
                     <v-tabs-items v-model="compile.tabSelect">
                         <v-tab-item v-for="(i,index) in compile.compile_Status.length" :key="index">
-                            <v-textarea height="100%" class="mt-2 elevation-2" label="Error Logs" readonly style="color:green" color="success" outlined hide-details auto-grow v-model="compile.errorText[index]">
+                            <v-textarea height="100%" class="mt-2 elevation-2" label="Error Logs" readonly style="color:green;" color="success" outlined hide-details auto-grow v-model="compile.errorText[index]">
                             </v-textarea>
                         </v-tab-item>
                     </v-tabs-items>
@@ -227,13 +225,13 @@ export default {
                     const files_ = file.name.split('.')
                     const files_type = files_[files_.length - 1]
                     if (allow_type.includes(files_type)) {
-                        var tmp = this.code
+                        var tmp = this.ide.code
                         this.readTextFile(file)
-                        var response = this.code
+                        var response = this.ide.code
                         if (response) {
-                            this.code = response
+                            this.ide.code = response
                         } else {
-                            this.code = tmp
+                            this.ide.code = tmp
                             this.uploadError = true
                             this.uploadError_Message = errorCase[1]
                         }
@@ -251,7 +249,7 @@ export default {
             var reader = new FileReader();
             reader.onload = () => {
                 var contents = reader.result;
-                this.code = contents
+                this.ide.code = contents
             }
             reader.readAsText(file);
         },
@@ -334,5 +332,4 @@ export default {
 .CodeMirror-scroll {
     text-align: left !important;
 }
-
 </style>

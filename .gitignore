@@ -3,5 +3,6 @@ commit.bat
 push.bat
 
 node_modules
+server
 
 .vscode

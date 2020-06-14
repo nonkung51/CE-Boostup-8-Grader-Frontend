@@ -20,14 +20,14 @@
                             <v-card-text>
                                 <!-- error alert -->
                                 <v-alert :class="shake" v-model="loginValid" dismissible color="indigo" border="left" elevation="2" colored-border icon="mdi-close-circle-outline">
-                                    Oops. We encounter : <span style="color:red;">{{loginErrorMessage}} </span>
+                                    Oops. : <span style="color:red;">{{loginErrorMessage}} </span>
                                 </v-alert>
                                 <!--  -->
                                 <!-- login form -->
                                 <v-form ref="form" v-model="valid">
-                                    <v-text-field label="Login" :rules="nameRules" counter name="login" prepend-icon="person" type="text" v-model="userFill" required></v-text-field>
+                                    <v-text-field outlined rounded label="Login" :rules="nameRules" counter name="login" prepend-inner-icon="person" type="text" v-model="userFill" required></v-text-field>
 
-                                    <v-text-field id="password" :rules="nameRules" counter label="Password" name="password" prepend-icon="lock" type="password" v-model="passFill" required></v-text-field>
+                                    <v-text-field :append-icon="show1 ? 'mdi-eye' : 'mdi-eye-off'" outlined rounded id="password" :rules="nameRules" counter label="Password" name="password" prepend-inner-icon="lock" :type=" !show1 ? 'text' : 'password'" v-model="passFill" @click:append="show1 = !show1" required></v-text-field>
                                 </v-form>
                                 <!--  -->
                             </v-card-text>
@@ -45,8 +45,8 @@
                     <v-dialog v-model="wait" persistent width="300">
                         <v-card color="primary" dark>
                             <v-card-text>
-                                <v-row>
-                                    <v-col align-self="center">
+                                <v-row align="center" justify="center" style="height:100%">
+                                    <v-col>
                                         <span class="mb-2">We are Logging You in...</span>
                                         <v-divider></v-divider>
                                         <v-progress-linear indeterminate color="white" class="mb-0"></v-progress-linear>
@@ -68,7 +68,6 @@
 .fab-trans {
     transition: all 1.2s ease-in-out !important;
 }
-
 </style>
 
 <script>
@@ -89,6 +88,7 @@ export default {
         return {
             userFill: "",
             passFill: "",
+            show1: true,
             nameRange: [6, 20],
             nameRules: [
                 v => !!v || 'This Field is required',
@@ -119,27 +119,56 @@ export default {
             this.loginValid = false;
             // Call login API 
             // this.axios.post("http://localhost:5000/api/v1/login/", {
-            //     "username": "test",
-            //     "password": "passwordd",
-            // }).then(response => {
-            //     console.log(response)
-            // })
-            //if (true) { // if CallBack and exist
+            //         "username": this.userFill,
+            //         "password": this.passFill,
+            //     }).then(response => {
+            //         this.$store.commit('setApiToken', response.token)
+            //         // login success
+            //         this.axios.get('https://aws.random.cat/meow').then(res => {
+            //             this.loginSuccess(res)
+            //         }).catch(err => {
+            //             console.log(err)
+
+            //         })
+            //     })
+            //     // login fail
+            //     .catch(error => {
+            //         this.wait = false
+            //         console.log(error.response.data)
+            //         this.loginValid = true;
+            //         this.loginErrorMessage = error.response.data.msg
+            //     });
+
+            this.axios.get('https://aws.random.cat/meow').then(res => {
+                this.loginSuccess(res)
+            }).catch(err => {
+                console.log(err)
+
+            })
+        },
+        loginSuccess(res) {
+            var data = {
+                username: this.userFill,
+                detail: {
+                    email: "Marcus@kmitl.ac.th",
+                    avatar: res.data.file,
+                    name: "Arthur Marcus"
+                },
+                question_Done: {},
+                submission: {}
+            }
+            this.$store.commit('user/set', data)
+            this.wait = false
+            this.scaleover = "scale-over"
+            this.wait = false
+            // animation sake
             setTimeout(() => {
-                var rand = this.getRandomInt(2);
-                if (rand == 1) { // login success
-                    this.scaleover = "scale-over"
-                    setTimeout(() => {
-                        this.$cookies.set('user', this.userFill);
-                        this.$router.push('/Home')
-                    }, 2000)
-                } else { // error
-                    this.loginValid = true;
-                    this.loginErrorMessage = "No User Found "
+                try {
+                    this.$router.push('/Home/dashboard')
+                } catch (e) {
+                    console.log("Router Err : " + e)
                 }
-                this.wait = false
-            }, 2000)
-            // }
+            }, 2000);
         },
         loadingClose() {
             this.wait = false
@@ -151,7 +180,7 @@ export default {
         this.cardShow = true;
     },
     created() {
-        this.$store.commit('setApiToken', "something")
+
     },
 }
 </script>

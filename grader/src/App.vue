@@ -1,7 +1,7 @@
 <template>
 <v-app id="app">
 
-    <v-content justify="center" align="center" fill-height>
+    <v-content style="height:100%">
         <router-view />
     </v-content>
     <!-- <v-footer app color="#42b983" class="white--text">
@@ -12,14 +12,19 @@
 </v-app>
 </template>
 
-<style lang="scss" scoped>
+<style lang="scss">
 #app {
-    font-family: Roboto;
+    // font-family: Roboto;
+font-family: 'Roboto', sans-serif;
     -webkit-font-smoothing: antialiased;
     -moz-osx-font-smoothing: grayscale;
     text-align: center;
     color: #2c3e50;
     // background: rgb(250, 250, 250);
+}
+
+.v-content__wrap{
+
 }
 </style>
 

@@ -2,7 +2,7 @@ import Vue from 'vue';
 import Vuex from 'vuex';
 import VuexPersistence from 'vuex-persist'
 //import question from './modules/question';
-//import user from './modules/user';
+import user from './modules/user';
 
 
 Vue.use(Vuex);
@@ -24,7 +24,7 @@ export default new Vuex.Store({
     },
     modules: {
         //question
-        // products
+        user
     },
     strict: debug,
     plugins: [new VuexPersistence().plugin]
