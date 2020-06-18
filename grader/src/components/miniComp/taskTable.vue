@@ -1,76 +1,131 @@
 <template>
-<VueGlow :color="color" mode="hex" style="border-radius:20px  !important;width:100%" elevation="15" intense>
-    <v-card style="border-radius:20px  !important;">
+<VueGlow :color="color" mode="hex" style="width:100%" elevation="15" intense>
+    <v-card style="">
         <v-data-iterator :items="filtered" :items-per-page.sync="itemsPerPage" :page="page" :search="search" :sort-by="sortBy.toLowerCase()" :sort-desc="sortDesc" hide-default-footer>
             <!-- search bar etc. -->
             <template v-slot:header>
-                <v-toolbar class="mb-2 task-rounded-top " :color="color" rounded dark flat>
-                    <v-toolbar-title class="headline font-weight-black mr-5">{{title}}</v-toolbar-title>
-                    <v-divider vertical class="mr-5"></v-divider>
+                <v-toolbar class="mb-2 task-rounded-top" :color="color" rounded flat>
+                    <!-- title -->
+                    <!-- <v-toolbar-title  class="headline font-weight-black mr-5">{{title}}</v-toolbar-title> -->
+                    <!-- change table -->
+                    <v-tooltip bottom>
+                        <template v-slot:activator="{ on }">
+                            <v-switch color="white" v-on="on" hide-details v-model="mode"></v-switch>
+                        </template>
+                        <span>Switch Table Style</span>
+                    </v-tooltip>
+
+                    <v-divider vertical class="mx-3"></v-divider>
                     <!-- Search Bar -->
-                    <v-col cols="4">
-                        <v-text-field v-model="search" clearable flat solo-inverted hide-details prepend-inner-icon="search" label="Search"></v-text-field>
+                    <v-col cols="3">
+                        <v-text-field v-model="search" clearable solo hide-details prepend-inner-icon="search" label="Search Name"></v-text-field>
                     </v-col>
+                    <v-divider vertical class="mx-1"></v-divider>
+                    <!-- types -->
+                    <v-col cols="3">
+                        <v-select multiple chips :menu-props="{ bottom: true, offsetY: true }" v-model="types" :items="table.types" clearable solo hide-details prepend-inner-icon="tag" label="types">
+                            <template v-slot:selection="{ item, index }">
+                                <v-chip v-if="index === 0">
+                                    <span>{{ item }}</span>
+                                </v-chip>
+                                <span v-if="index === 1" class="grey--text caption">(+{{ types.length - 1 }} others)</span>
+                            </template>
+                        </v-select>
+                    </v-col>
+                    <v-col cols="1">
+                        <v-tooltip bottom>
+                            <template v-slot:activator="{ on }">
+                                <v-checkbox v-on="on" v-model="filter.typeSingle" color="light" label="single" hide-details></v-checkbox>
+                            </template>
+                            <span>Switch types Filter Style</span>
+                        </v-tooltip>
+                    </v-col>
+                    <v-divider vertical class="mx-3"></v-divider>
                     <template v-if="$vuetify.breakpoint.mdAndUp">
                         <v-row justify="start" align="center">
-                            <v-spacer></v-spacer>
                             <!-- Diff filter -->
-                            <v-col cols="6">
-                                <v-range-slider hide-details label="rank" v-model="rank_range" thumb-color="black" thumb-label="always" min="0" max="10"></v-range-slider>
-                            </v-col>
+                            <v-tooltip bottom>
+                                <template v-slot:activator="{ on }">
+                                    <v-col cols="6" v-on="on">
+                                        <v-range-slider hide-details label="rank" v-model="rank_range" thumb-color="black" thumb-label="always" min="0" max="10"></v-range-slider>
+                                    </v-col>
+                                </template>
+                                <span>Rank Range</span>
+                            </v-tooltip>
                             <v-spacer></v-spacer>
-
                             <!-- sort desc or asc -->
-                            <v-col class="d-none d-md-flex d-xl-none d-md-none d-lg-flex">
-                                <v-btn-toggle v-model="sortDesc" mandatory>
-                                    <v-btn large depressed color="dark" :value="false">
-                                        <v-icon>mdi-arrow-up</v-icon>
-                                    </v-btn>
-                                    <v-btn large depressed color="dark" :value="true">
-                                        <v-icon>mdi-arrow-down</v-icon>
-                                    </v-btn>
-                                </v-btn-toggle>
-                            </v-col>
+                            <v-tooltip bottom>
+                                <template v-slot:activator="{ on }">
+                                    <v-col v-on="on" class="d-none d-md-flex d-xl-none d-md-none d-lg-flex">
+                                        <v-btn-toggle v-model="sortDesc" mandatory>
+                                            <v-btn large depressed :value="false">
+                                                <v-icon>mdi-arrow-up</v-icon>
+                                            </v-btn>
+                                            <v-btn large depressed :value="true">
+                                                <v-icon>mdi-arrow-down</v-icon>
+                                            </v-btn>
+                                        </v-btn-toggle>
+                                    </v-col>
+                                </template>
+                                <span>Sort Style</span>
+                            </v-tooltip>
+                            <v-spacer></v-spacer>
                         </v-row>
                     </template>
                 </v-toolbar>
             </template>
             <!--  -->
             <!-- table data -->
-            <template v-slot:default="props">
+            <template v-if="!mode" v-slot:default="props">
                 <v-row class="pa-5">
-                    <v-col v-for="item in props.items" :key="item.title" cols="12" sm="6" md="4" lg="3">
+                    <v-col v-for="(item,index) in props.items" :key="index" cols="12" sm="6" md="4" lg="3">
                         <v-hover v-slot:default="{ hover }" close-delay="50">
-                            <v-card class="swing-in-top-bck" v-ripple style="border-radius:20px;" :elevation="hover ? 16 : 2" :to="'/Home/task/'+item.id">
-                                <v-card-title class="subheading font-weight-bold">{{ item.id }} | {{ item.title }}</v-card-title>
+                            <v-card :class="animation" v-ripple style="border-radius:20px;" :elevation="hover ? 16 : 2" @click.end="toCoding(item)">
+                                <v-card-title class="subheading font-weight-bold">{{ item.i_d }} | {{ item.title }}</v-card-title>
 
                                 <v-divider :color="item.status_col"></v-divider>
                                 <v-list-item>
                                     <v-list-item-content>rank</v-list-item-content>
                                     <v-list-item-content>
-                                        <v-rating :value="item.rank" style="flex: none;" color="amber" dense half-increments readonly size="20"></v-rating>
+                                        <v-rating :value="item.rank/2" style="flex: none;" :color="item.rank >= 4.5 ? 'red':'amber'" dense half-increments readonly size="20"></v-rating>
                                     </v-list-item-content>
                                 </v-list-item>
 
-                                <v-list dense>
+                                <v-list v-if="item.finished" dense>
                                     <v-list-item>
                                         <v-list-item-content>Passed</v-list-item-content>
-                                        <v-list-item-content class="align-end">{{ item.passed }}</v-list-item-content>
+                                        <v-list-item-content class="align-end">{{ item.finished  }}</v-list-item-content>
                                     </v-list-item>
                                 </v-list>
 
-                                <v-list dense>
+                                <!-- <v-list dense>
                                     <v-list-item>
                                         <v-list-item-content>Author</v-list-item-content>
                                         <v-list-item-content class="align-end">{{ item.by }}</v-list-item-content>
                                     </v-list-item>
-                                </v-list>
+                                </v-list> -->
                                 <v-divider :color="item.status_col"></v-divider>
 
-                                <v-list dense>
+                                <v-list v-if="item.result" dense>
                                     <v-list-item>
-                                        <v-list-item-content>Your Work</v-list-item-content>
-                                        <v-list-item-content class="align-end" :style="{color:item.status_col}">{{ item.status }}</v-list-item-content>
+                                        <v-list-item-content>Result</v-list-item-content>
+                                        <!-- <v-list-item-content class="align-end" :style="{color:item.status_col}">{{ item.list }}</v-list-item-content> -->
+                                        <v-list-item-content class="align-end">{{ item.result }}</v-list-item-content>
+                                    </v-list-item>
+                                </v-list>
+
+                                <v-list v-if="item.types" dense>
+                                    <v-list-item>
+                                        <v-list-item-content>Tag</v-list-item-content>
+                                        <!-- <v-list-item-content class="align-end" :style="{color:item.status_col}">{{ item.list }}</v-list-item-content> -->
+                                        <v-list-item-content class="align-end">
+                                            {{item.types}}
+                                            <!-- <template v-for=" i in tagFilter(item.types)">
+                                                <v-chip :key="i">
+                                                    {{ i }}
+                                                </v-chip>
+                                            </template> -->
+                                        </v-list-item-content>
                                     </v-list-item>
                                 </v-list>
 
@@ -78,6 +133,17 @@
                         </v-hover>
                     </v-col>
                 </v-row>
+            </template>
+
+            <!-- table data list -->
+            <template v-else v-slot:default="props">
+                <v-data-table hide-default-footer :items-per-page.sync="itemsPerPage" :page="page" :search="search" @click:row="to($event)" :headers="table.header" :items="props.items">
+
+                    <template v-slot:item.rank="{ item }">
+                        <v-rating :value="item.rank" style="flex: none;" color="amber" dense half-increments readonly size="20"></v-rating>
+                    </template>
+
+                </v-data-table>
             </template>
 
             <!-- Pagination -->
@@ -99,7 +165,9 @@
                                     <v-list-item-title>{{ number }}</v-list-item-title>
                                 </v-list-item>
                             </v-list>
+
                         </v-menu>
+
                         <v-spacer></v-spacer>
                         <span class="mr-4 font-weight-black">
                             Page {{ page }} of {{ numberOfPages }}
@@ -138,30 +206,93 @@ export default {
     props: {
         tasks: Array,
         color: String,
-        title: String
+        title: String,
+        animation: String,
+        type: String
     },
     data() {
         return {
-            sortBy: 'rank',
+            sortBy: 'i_d',
             page: 1,
             sortDesc: false,
             search: '',
-            itemsPerPage: 4,
-            itemsPerPageArray: [4, 8, 12],
-            rank_range: [0, 10]
+            types: [],
+            filter: {
+                typeSingle: false,
+            },
+            itemsPerPage: 20,
+            itemsPerPageArray: [12, 20, 30, 50],
+            rank_range: [0, 10],
+            table: {
+                header: [{
+                        text: 'ID',
+                        value: 'i_d',
+                    },
+                    {
+                        text: 'Title',
+                        value: 'title',
+                    },
+                    {
+                        text: 'Rank',
+                        value: 'rank',
+                        align: 'center',
+                    },
+                    // {
+                    //     text: 'Author',
+                    //     value: 'by',
+                    //     align: 'center',
+                    // },
+                ],
+                types: [
+                    "Pattern",
+                    "Basic I / O",
+                    "Shift bit",
+                    "If - Else",
+                    "Loop",
+                    "Array",
+                    "Function",
+                    "Pointer",
+                ]
+            },
+            mode: false,
+            ratingIcon: {
+                full: "mdi-skull-outline",
+                half: "mdi-skull-outline",
+                empty: "mdi-skull-outline"
+            }
         }
     },
     computed: {
         // pagination
         numberOfPages() {
-            return Math.ceil(this.tasks.length / this.itemsPerPage)
+            if (this.tasks)
+                return Math.ceil(this.tasks.length / this.itemsPerPage)
+            else return 0
         },
         filtered() {
-            return this.tasks.filter((el) => {
-                var diff = el.rank
-                return (diff >= this.rank_range[0] && diff <= this.rank_range[1]);
-            });
+            if (this.tasks)
+                return this.tasks.filter((el) => {
+                    var diff = el.rank
+                    var inRank = diff >= this.rank_range[0] && diff <= this.rank_range[1]
+                    var intype = true
+                    if (this.types.length && el.types) {
+                        var sp = "$.$"
+                        var typeArr = el.types.split(sp)
+                        if (!this.filter.typeSingle) {
+                            intype = typeArr.some(t => this.types.includes(t))
+                        } else {
+                            intype = typeArr.every(t => this.types.includes(t))
+                        }
+                    }
+                    return (inRank && intype);
+                });
+            else return []
         },
+        tagFilter(str) {
+            if (str)
+                return str.split("$.$")
+            else return " "
+        }
     },
     methods: {
         // pagination
@@ -174,11 +305,38 @@ export default {
         updateItemsPerPage(number) {
             this.itemsPerPage = number
         },
+        toCoding(item) {
+            this.$router.push({
+                name: 'Coding'
+            })
+            this.$cookies.set('task', item, '1d')
+        }
     },
     created() {
-        // this.axios.get('http://localhost:5000/api/v1/questions').then(response => {
-        //     this.tasks = response.data.data;
-        // })
+
+        if (this.type == "submission") {
+            this.table.header.push({
+                text: 'Result',
+                value: 'result',
+                align: 'center'
+
+            })
+        } else if (this.type == "question") {
+            this.table.header.push({
+                text: 'Passed',
+                value: 'finished',
+                align: 'center'
+
+            })
+        }
     }
 }
 </script>
+
+<style>
+tr:hover {
+    box-shadow:
+        rgba(0, 0, 0, 0.1) 0px 0px 9px 5px;
+    background: white !important;
+}
+</style>

@@ -15,43 +15,62 @@ const routes = [{
         name: 'Home',
         component: Home,
         children: [{
-                path: '/Home/dashboard',
+                path: 'dashboard',
                 name: 'Dashboard',
                 component: () =>
                     import ('../views/Dashboard.vue')
             },
             {
-                path: '/Home/submission',
-                name: 'Submission',
+                path: '/Home/work',
+                name: 'Work',
                 component: () =>
-                    import ('../views/Submission.vue')
-            },
-            {
-                path: '/Home/task',
-                component: () =>
-                    import ('../views/Task.vue'),
+                    import ('../views/Work.vue'),
                 children: [{
-                        path: '',
+                        path: 'task',
+                        name: 'Task',
                         component: () =>
                             import ('../views/Tasks.vue'),
                     },
                     {
-                        path: ':task_id',
+                        path: 'coding',
                         name: 'Coding',
                         component: () =>
                             import ('../views/Coding.vue'),
+                        props: {
+                            task: Object
+                        }
                     },
+                    {
+                        path: 'submission',
+                        name: 'Submission',
+                        component: () =>
+                            import ('../views/Submission.vue')
+                    }
                 ],
             },
             {
-                path: '/Home/profile',
+                path: 'profile',
                 name: 'Profile',
                 component: () =>
                     import ('../views/Profile.vue')
             },
             {
-                path: '/Home/learn',
-                beforeEnter() { location.href = 'https://stackoverflow.com' }
+                path: 'learn',
+                name: 'learn1',
+                beforeEnter() {
+                    window.open('http://bit.ly/bookceboostup', '_blank');
+                    window.focus();
+                    // location.href = 'https://stackoverflow.com'
+                }
+            },
+            {
+                path: '/Home/learn2',
+                name: 'learn2',
+                beforeEnter() {
+                    window.open('https://stackoverflow.com/', '_blank');
+                    window.focus();
+                    // location.href = 'https://stackoverflow.com'
+                }
             }
         ]
     },
@@ -81,15 +100,15 @@ router.beforeEach((to, from, next) => {
     // get all path
     routes.forEach(el => {
         // root
-        existPath.push(el.path)
+        existPath.push(el.name)
         if (el.children)
         // root child
             el.children.forEach(child => {
-            existPath.push(child.path);
+            existPath.push(child.name);
             // root child child
             if (child.children)
                 child.children.forEach(c => {
-                    existPath.push(c.path)
+                    existPath.push(c.name)
                 })
         })
     })
@@ -109,7 +128,7 @@ router.beforeEach((to, from, next) => {
         }
     }
 
-    if (to.name != "Coding" && !existPath.includes(to.path)) {
+    if (!existPath.includes(to.name)) {
         next('/Home/dashboard');
     }
 

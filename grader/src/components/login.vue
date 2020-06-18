@@ -2,7 +2,7 @@
 <v-app id="inspire">
     <scaleOver :scaleover="scaleover"></scaleOver>
     <themeSwitch style="position:absolute;right:0;top:0;z-index:4;"></themeSwitch>
-    <v-content>
+    <v-main>
         <v-container style="background:transparent;position:absolute;" fill-height fluid>
             <v-row align="center" justify="center">
                 <v-col cols="12" sm="8" md="4">
@@ -58,9 +58,9 @@
 
                 </v-col>
             </v-row>
-            <vue-particles style="height:100%;position:absolute;width:100%" color="#dedede" :particleOpacity="0.7" :particlesNumber="80" shapeType="polygon" :particleSize="4" linesColor="#dedede" :linesWidth="1" :lineLinked="true" :lineOpacity="0.4" :linesDistance="150" :moveSpeed="3" :hoverEffect="true" hoverMode="grab" :clickEffect="true" clickMode="push"> </vue-particles>
+            <!-- <vue-particles style="height:100%;position:absolute;width:100%" color="#dedede" :particleOpacity="0.7" :particlesNumber="80" shapeType="polygon" :particleSize="4" linesColor="#dedede" :linesWidth="1" :lineLinked="true" :lineOpacity="0.4" :linesDistance="150" :moveSpeed="3" :hoverEffect="true" hoverMode="grab" :clickEffect="true" clickMode="push"> </vue-particles> -->
         </v-container>
-    </v-content>
+    </v-main>
 </v-app>
 </template>
 
@@ -118,47 +118,47 @@ export default {
             this.wait = true
             this.loginValid = false;
             // Call login API 
-            // this.axios.post("http://localhost:5000/api/v1/login/", {
-            //         "username": this.userFill,
-            //         "password": this.passFill,
-            //     }).then(response => {
-            //         this.$store.commit('setApiToken', response.token)
-            //         // login success
-            //         this.axios.get('https://aws.random.cat/meow').then(res => {
-            //             this.loginSuccess(res)
-            //         }).catch(err => {
-            //             console.log(err)
+            this.axios.post("http://localhost:5000/api/v1/login/", {
+                    "username": this.userFill,
+                    "password": this.passFill,
+                }).then(response => {
 
-            //         })
-            //     })
-            //     // login fail
-            //     .catch(error => {
-            //         this.wait = false
-            //         console.log(error.response.data)
-            //         this.loginValid = true;
-            //         this.loginErrorMessage = error.response.data.msg
-            //     });
+                    var tok = response.data.user.token
+                    // login success
+                    console.log(response)
+                    this.axios.get('https://aws.random.cat/meow').then(res => {
+                        this.loginSuccess(response, res, tok)
+                    }).catch(err => {
+                        console.log(err)
+                    })
+                })
+                // login fail
+                .catch(error => {
+                    this.wait = false
+                    this.loginValid = true;
+                    this.loginErrorMessage = error.response.data.msg
+                });
 
-            this.axios.get('https://aws.random.cat/meow').then(res => {
-                this.loginSuccess(res)
-            }).catch(err => {
-                console.log(err)
+            // this.axios.get('https://aws.random.cat/meow').then(res => {
+            //     this.loginSuccess(res)
+            // }).catch(err => {
+            //     console.log(err)
 
-            })
+            // })
         },
-        loginSuccess(res) {
+        loginSuccess(res1, prof, token) {
             var data = {
+                token: token,
                 username: this.userFill,
                 detail: {
-                    email: "Marcus@kmitl.ac.th",
-                    avatar: res.data.file,
-                    name: "Arthur Marcus"
+                    email: res1.data.user.nickname + "@kmitl.ac.th",
+                    avatar: prof.data.file,
+                    name: res1.data.user.nickname
                 },
                 question_Done: {},
                 submission: {}
             }
             this.$store.commit('user/set', data)
-            this.wait = false
             this.scaleover = "scale-over"
             this.wait = false
             // animation sake

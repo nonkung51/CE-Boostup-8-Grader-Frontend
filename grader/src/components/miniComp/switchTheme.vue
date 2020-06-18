@@ -1,5 +1,6 @@
 <template>
-<v-switch v-model="$vuetify.theme.dark" color="white" hide-details></v-switch>
+<v-switch v-model="$vuetify.theme.dark" color="white" hide-details>
+</v-switch>
 </template>
 
 <script>

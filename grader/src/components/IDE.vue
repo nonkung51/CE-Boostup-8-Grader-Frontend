@@ -9,29 +9,46 @@
         <v-icon color="red">mdi-checkbox-blank-circle</v-icon>
     </v-system-bar>
     <v-row>
+        <!-- title -->
         <v-col align="start">
-            <v-btn text style="font-weight:bold;" class="title">Write Your Code Below..</v-btn>
+            <v-btn text style="font-weight:bold;" class="title">{{ide.title}}</v-btn>
         </v-col>
         <!-- font Size -->
-        <v-col cols="2">
-            <v-text-field v-model="ide.fonts" type="number" label="Font Size" hide-details outlined append-icon="mdi-format-size">
-            </v-text-field>
-        </v-col>
-        <!-- Language display -->
-        <v-col cols="2">
-            <v-text-field label="Editor Language" class="ma-0" hide-details v-model="ide.language" outlined readonly>
-                <template v-slot:append>
-                    <v-icon>mdi-alphabetical-variant</v-icon>
-                </template>
-            </v-text-field>
-        </v-col>
-        <!-- Theme select -->
-        <v-col cols="2">
-            <v-select hide-details :items="ide.editorThemes" class="ma-0" v-model="cmOptions.theme" outlined label="Editor Theme">
-                <template v-slot:prepend-inner>
-                    <v-icon>mdi-theme-light-dark</v-icon>
-                </template>
-            </v-select>
+        <v-col align="end">
+            <v-row class="ma-0 pa-0" align="center" justify="end">
+                <v-col cols="3">
+                    <v-text-field class="textfield-noarrow" v-model="ide.fonts" type="number" label="Font Size" hide-details outlined min="12" max="30">
+                        <template v-slot:append>
+                            <v-hover>
+                                <template v-slot:default="{ hover }">
+                                    <v-icon :class="hover ? 'elevation-3' : '' " @click="fontDec()">mdi-minus</v-icon>
+                                </template>
+                            </v-hover>
+                            <v-hover>
+                                <template v-slot:default="{ hover }">
+                                    <v-icon :class="hover ? 'elevation-3' : '' " @click="fontIns()">mdi-plus</v-icon>
+                                </template>
+                            </v-hover>
+                        </template>
+                    </v-text-field>
+                </v-col>
+                <!-- Language display -->
+                <v-col cols="3">
+                    <v-text-field style="width:200px" label="Language" class="ma-0" hide-details v-model="ide.language" outlined readonly>
+                        <template v-slot:append>
+                            <v-icon>mdi-alphabetical-variant</v-icon>
+                        </template>
+                    </v-text-field>
+                </v-col>
+                <!-- Theme select -->
+                <v-col cols="4">
+                    <v-select hide-details :items="ide.editorThemes" :menu-props="{ bottom: true, offsetY: true }" class="ma-0" v-model="cmOptions.theme" outlined label="Editor Theme">
+                        <template v-slot:prepend-inner>
+                            <v-icon>mdi-theme-light-dark</v-icon>
+                        </template>
+                    </v-select>
+                </v-col>
+            </v-row>
         </v-col>
     </v-row>
     <v-divider></v-divider>
@@ -40,14 +57,14 @@
     <!-- code editor -->
     <codemirror v-model="ide.code" :style="ideStyle" :options="cmOptions" />
     <!-- action button -->
-    <v-row full-width justify="space-between" align="center">
+    <v-row v-if="footer" full-width justify="space-between" align="center">
         <v-col>
             <v-row class="ma-0" justify="start">
                 <!-- Upload local Code -->
                 <v-btn @click="$refs.inputUpload.click()" color="info" raised>
                     <v-icon left>mdi-upload</v-icon> Upload Code
                 </v-btn>
-                <input v-show="false" ref="inputUpload" type="file" @change="codeUpload">
+                <input v-show="false" ref="inputUpload" type="file" accept=".c , .cpp" @change="codeUpload">
                 <!-- Error alert -->
                 <v-dialog v-model="uploadError" persistent width="500">
                     <div class="pa-5" color="transparent">
@@ -65,11 +82,11 @@
                     <v-checkbox label="Compile With Sample" color="orange darken-1" class="ma-0" hide-details v-model="compile.withSample"></v-checkbox>
                 </v-btn>
                 <!-- Complie sample -->
-                <v-btn color="warning" class="mr-5" raised @click.end="Compiling()">
-                    <v-icon left>mdi-code-tags-check</v-icon> Compile
+                <v-btn color="warning" class="mr-5" raised @click.end="openCompile()">
+                    <v-icon left>mdi-console</v-icon> Open Console
                 </v-btn>
                 <!-- Submit code -->
-                <v-btn @click="snackbar = true" color="success" raised>
+                <v-btn color="success" @click.end="Submit()" raised>
                     <v-icon left>mdi-cloud-upload</v-icon> Submit
                 </v-btn>
                 <!-- submit warning -->
@@ -84,39 +101,56 @@
         </v-col>
     </v-row>
     <v-divider></v-divider>
-    <v-sheet class="text-left mt-2 elevation-3" v-show="compile.show">
-        <v-card class="pa-5" height="300">
-            <v-skeleton-loader :loading="compile.skeleton" height="100%" type="table">
-
-                <v-toolbar class="elevation-0">
-                    <v-col cols="2">
-                        <v-btn block outlined class="mt-1" id="result" color="info"><strong>Result</strong></v-btn>
+    <v-sheet id="logs" class="text-left mt-2 elevation-3" v-show="compile.show">
+        <v-card class="pa-5">
+            <v-toolbar class="elevation-0">
+                <v-col class="ma-0 pa-0" cols="2">
+                    <v-btn block :ripple="false" class="mt-1" id="result" color="info"><strong>Result</strong></v-btn>
+                </v-col>
+                <v-row align="center" justify="end">
+                    <v-col cols="3">
+                        <v-btn v-if="compile.time" block outlined class="mt-1" id="result" color="info">Time Used : <strong>{{ compile.time + " s."}}</strong></v-btn>
                     </v-col>
-                </v-toolbar>
+                    <v-col cols="3">
+                        <v-btn block class="mt-1" id="result" color="indigo" dark @click.end="Compiling()">
+                            <v-icon left>mdi-code-tags-check</v-icon> <strong>Compiling</strong>
+                        </v-btn>
+                    </v-col>
+                </v-row>
 
-                <v-tabs show-arrows grow v-model="compile.tabSelect" slider-color="primary">
-                    <template v-if="compile.withSample">
-                        <v-tab  v-for="(i,index) in compile.compile_Status.length" :key="index">
-                            <v-btn text  :ripple="false" :loading="!compile.compile_Status[index].state">
-                                Case : {{index + 1}}
-                                <v-icon v-if="compile.compile_Status[index].result" color="success" right>mdi-check-bold</v-icon>
-                                <v-icon v-else color="error" right>mdi-close</v-icon>
-                            </v-btn>
-                        </v-tab>
-                    </template>
-                    <v-tabs-items v-model="compile.tabSelect">
-                        <v-tab-item v-for="(i,index) in compile.compile_Status.length" :key="index">
-                            <v-textarea height="100%" class="mt-2 elevation-2" label="Error Logs" readonly style="color:green;" color="success" outlined hide-details auto-grow v-model="compile.errorText[index]">
-                            </v-textarea>
-                        </v-tab-item>
-                    </v-tabs-items>
-                </v-tabs>
-            </v-skeleton-loader>
+            </v-toolbar>
+
+            <span v-if="compile.withSample">
+                <v-skeleton-loader :loading="compile.skeleton" height="100%" type="table">
+                    <v-tabs show-arrows grow v-model="compile.tabSelect" slider-color="primary">
+                        <template v-if="compile.withSample">
+                            <v-tab v-for="(i,index) in compile.compile_Status.length" :key="index">
+                                <v-btn text :ripple="false">
+                                    Case : {{index + 1}}
+                                    <v-icon v-if="compile.compile_Status[index] == 'P'" color="success" right>mdi-check-bold</v-icon>
+                                    <v-icon v-else color="error" right>mdi-close</v-icon>
+                                </v-btn>
+                            </v-tab>
+                        </template>
+                        <!-- <v-tabs-items v-model="compile.tabSelect">
+                            <v-tab-item v-for="(i,index) in compile.compile_Status.length" :key="index">
+                                <v-textarea class="mt-2 elevation-2" label="Error Logs" readonly style="color:green;" color="success" outlined hide-details v-model="compile.errorText[index]">
+                                </v-textarea>
+                            </v-tab-item>
+                        </v-tabs-items> -->
+                    </v-tabs>
+                </v-skeleton-loader>
+            </span>
+            <span v-else>
+                <v-textarea class="mt-2 elevation-2" clearable label="Input Field" style="color:green;" rows="4" color="success" outlined hide-details v-model="compile.input">
+                </v-textarea>
+                <v-textarea v-if="compile.log" class="mt-2 elevation-2" label="Compile Result" readonly style="color:green;" color="success" outlined hide-details v-model="compile.log">
+                </v-textarea>
+            </span>
+
         </v-card>
     </v-sheet>
 </v-card>
-
-<!-- Or manually control the data synchronization -->
 </template>
 
 <script>
@@ -133,9 +167,14 @@ import mixin from '../components/mixins'
 
 export default {
     mixins: [mixin],
-    components: {
-
+    props: {
+        qId: String,
+        footer: Boolean,
+        code: String,
+        title: String,
+        task: null
     },
+    components: {},
     data() {
         return {
             cmOptions: {
@@ -148,10 +187,11 @@ export default {
                 // more CodeMirror options...
             },
             ide: {
+                title: "",
                 fonts: 16,
                 language: "C/C++",
                 editorThemes: ["base16-dark", "base16-light"],
-                code: 'const a = 10',
+                code: "#include<stdio.h> \r\n\nint main() { \r\n printf(\"Hello!! CE-BoostUp 8\"); \r\n return 0; \r\n}",
             },
             //  snackbar //
             snackbar: false,
@@ -165,30 +205,14 @@ export default {
             compile: {
                 withSample: false,
                 show: false,
-                compile_Status: [{
-                        state: false,
-                        result: "idle"
-                    },
-                    {
-                        state: false,
-                        result: "idle"
-                    },
-                    {
-                        state: false,
-                        result: "idle"
-                    },
-                    {
-                        state: false,
-                        result: "idle"
-                    },
-                    {
-                        state: false,
-                        result: "idle"
-                    }
-                ],
-                errorText: ["Error Sample 1\nError #1\nError#2", "Error Sample 2\nError #1\nError#2", "Error Sample 3\nError #1\nError#2", "Error Sample 4\nError #1\nError#2", "Error Sample 5\nError #1\nError#2"],
+                // no sample
+                input: "Your Input Here",
+                log: "",
+                time: "",
+                // with sample
+                compile_Status: [],
                 tabSelect: 0,
-                skeleton: true
+                skeleton: false
             } // length depend on question's sample
         }
     },
@@ -207,7 +231,7 @@ export default {
             return {
                 'font-size': this.ide.fonts + 'px',
             }
-        }
+        },
     },
     methods: {
         codeUpload(e) {
@@ -221,7 +245,6 @@ export default {
             if (files) {
                 const file = files[0]
                 if (file) {
-                    console.log(file)
                     const files_ = file.name.split('.')
                     const files_type = files_[files_.length - 1]
                     if (allow_type.includes(files_type)) {
@@ -258,66 +281,99 @@ export default {
                 this.compile.compile_Status[i].state = true
             }, this.getRandomInt(5000));
         },
-        Compiling() {
-            // call bottom sheet
-            this.compile.show = true
-
-            this.compile.compile_Status = [{
-                    state: false,
-                    result: "idle"
-                },
-                {
-                    state: false,
-                    result: "idle"
-                },
-                {
-                    state: false,
-                    result: "idle"
-                },
-                {
-                    state: false,
-                    result: "idle"
-                },
-                {
-                    state: false,
-                    result: "idle"
-                }
-            ]
-
-            // wait for response  3 sec
-            // call api here 
-            // this.axios.post('url to submit',{body} , {timeout : 3 }).then(res => {})
-
-            // simulator
+        openCompile() {
+            this.compile.show = !this.compile.show
             setTimeout(() => {
-                this.compile.skeleton = false
-            }, 2000)
+                var logs = document.getElementById('logs')
+                logs.scrollIntoView();
+            }, 200);
+            this.compile.compile_Status = []
+            this.compile.log = ""
+        },
+        Compiling() {
 
-            for (var i = 0; i < this.compile.compile_Status.length; i++) {
-                var res = this.getRandomInt(3)
-                switch (res) {
-                    case 0:
-                        this.compile.compile_Status[i].result = false
-                        break
-                    case 1:
-                        this.compile.compile_Status[i].result = true
-                        break
-                    case 2:
-                        this.compile.compile_Status[i].result = true
-                        break
-                }
-                this.delay(i);
+            // no sample
+            let data = {
+                input: "",
+                sourceCode: ""
             }
+            this.compile.log = "Waiting for response"
+
+            if (this.compile.withSample) {
+                // input
+                data.input = this.task.input
+                // output
+                data.output = this.task.output
+                // code
+                data.sourceCode = this.ide.code
+            } else { // without sample
+                if (!this.compile.input) this.compile.input = " "
+                data = {
+                    input: this.compile.input,
+                    sourceCode: this.ide.code
+                }
+            }
+            data = JSON.stringify(data)
+
+            this.axios.post('http://localhost:8080/compiler', data, {
+                headers: {
+                    'Content-Type': 'application/json'
+                }
+            }).then(res => {
+                console.log(res)
+                if (this.compile.withSample) {
+                    this.compile.compile_Status = []
+                    for (var i = 0; i < res.data.result.length; i++) {
+                        this.compile.compile_Status.push(res.data.result.charAt(i))
+                    }
+                    this.compile.time = res.data.timeUsage
+                } else {
+                    if (res.data.returnCode) {
+                        this.compile.log = "Compile Error Code -1"
+                    } else {
+                        this.compile.log = res.data.result;
+                        this.compile.time = res.data.timeUsage
+                    }
+                }
+            }).catch(err => {
+                console.log(err)
+            })
 
         },
-        increment() {
-            this.foo = parseInt(this.foo, 10) + 1
+        Submit() {
+            let data = {
+                token : this.$store.getters['user/getToken'],
+                code: this.ide.code,
+                questionId : this.task.id
+            }
+            this.axios.post('http://localhost:8080/api/v1/submission/', data, {
+                headers: {
+                    'Content-Type': 'application/json'
+                }
+            }).then(res => {
+                this.snackbar = true
+                console.log(res)
+            }).catch(err => {
+                console.log(err)
+            })
         },
-        decrement() {
-            this.foo = parseInt(this.foo, 10) - 1
+        fontIns() {
+            this.ide.fonts += this.ide.fonts < 30 ? 1 : 0;
+        },
+        fontDec() {
+            this.ide.fonts -= this.ide.fonts > 10 ? 1 : 0;
         }
     },
-    mounted() {}
+    mounted() {
+        if (this.code) {
+            this.ide.code = this.code
+        }
+        if (!this.title) {
+            this.ide.title = "Write Your Code Below.."
+        }
+    },
+    created() {
+    },
 }
 </script>
 
@@ -331,5 +387,15 @@ export default {
 
 .CodeMirror-scroll {
     text-align: left !important;
+}
+
+.textfield-noarrow input::-webkit-outer-spin-button,
+input::-webkit-inner-spin-button {
+    -webkit-appearance: none;
+    margin: 0;
+}
+
+.textfield-noarrow input[type=number] {
+    -moz-appearance: textfield;
 }
 </style>

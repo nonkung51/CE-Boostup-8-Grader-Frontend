@@ -5,14 +5,6 @@ module.exports = {
     // dev mode
     devServer: {
         proxy: {
-            "/api": {
-                target: 'http://jsonplaceholder.typicode.com',
-                changeOrigin: true,
-                pathRewrite: {
-                    '^/api': ''
-                },
-                secure: false
-            },
             "/gists": {
                 target: "https://api.github.com",
                 changeOrigin: true,
@@ -30,6 +22,22 @@ module.exports = {
                     '^/goo': ''
                 },
             },
+            "/api/*": {
+                target: "http://localhost:5000/api",
+                changeOrigin: true,
+                secure: false,
+                pathRewrite: {
+                    '^/api': ''
+                },
+            },
+            "/compiler": {
+                target: "http://localhost:4906/compiler",
+                changeOrigin: true,
+                secure: false,
+                pathRewrite: {
+                    '^/compiler': ''
+                },
+            }
         }
     },
     chainWebpack: config => {
@@ -39,5 +47,14 @@ module.exports = {
                 args[0].title = 'CE-BoostUp 8'
                 return args
             })
+    },
+    css: {
+        loaderOptions: {
+            scss: {
+                prependData: `
+                    @import "@/css/ova.scss";
+                     `
+            }
+        }
     }
 }
