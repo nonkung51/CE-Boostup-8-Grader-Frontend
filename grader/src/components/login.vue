@@ -36,6 +36,7 @@
                             <v-card-actions>
                                 <v-btn text> <a>Contact Staff </a> </v-btn>
                                 <v-spacer></v-spacer>
+                                <v-btn :class="scaleIn" v-show="loginValid" @click.end="register()" color="purple accent-4" style="text-decoration-line:none;color:white">Register With This Form ?</v-btn>
                                 <v-btn :loading="wait" @click.end="login()" :disabled="!valid" color="purple accent-4" style="text-decoration-line:none;color:white">Login</v-btn>
                             </v-card-actions>
                             <!--  -->
@@ -102,17 +103,32 @@ export default {
             loginValid: false,
             loginErrorMessage: "UnKnow Error",
             cardShow: false,
-            scaleover: ""
+            scaleover: "",
         }
     },
     computed: {
         shake() {
             return this.loginValid ? "shake-horizontal" : " ";
+        },
+        scaleIn() {
+            return this.loginValid ? "scale-in-center" : " ";
         }
     },
     methods: {
         validate() {
             this.$refs.form.validate()
+        },
+        register() {
+            this.axios.post('http://localhost:5000/api/v1/register/', {
+                    "username": this.userFill,
+                    "password": this.passFill,
+                    "nickname": "anonymous"
+                })
+                .then(res => {
+                    console.log(res)
+                }).catch(err => {
+                    console.log(err)
+                })
         },
         login() {
             this.wait = true

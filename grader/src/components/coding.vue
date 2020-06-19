@@ -74,7 +74,7 @@
 
                                     </v-col>
                                     <v-col cols="2">
-                                        <v-btn block outlined class="mt-1 glow-indigo" color="indigo" @click="rightNav.codePopup = !rightNav.codePopup"><strong>See Code</strong></v-btn>
+                                        <v-btn block :disabled="rightNav.seeCode" outlined class="mt-1 glow-indigo" color="indigo" @click="rightNav.codePopup = !rightNav.codePopup"><strong>See Code</strong></v-btn>
                                         <!-- show last submit code -->
                                         <v-dialog v-model="rightNav.codePopup" persistent>
                                             <v-btn color="error" tile @click="rightNav.codePopup = !rightNav.codePopup"><strong>Close</strong></v-btn>
@@ -134,6 +134,7 @@ export default {
             borderSize: 5,
             tab_select: 0,
             codePopup: false,
+            seeCode: true,
             lastCode: "#include<stdio.h>\r\n int main() {printf(\"a\"); return 0; }"
         },
         task: Object
@@ -156,10 +157,14 @@ export default {
         }
         this.axios.post("http://localhost:8080/api/v1/get_finish_code", body)
             .then(res => {
+                console.log(res)
                 var arr = res.data.data
-                this.rightNav.lastCode = arr[arr.length-1].code
+                this.rightNav.lastCode = arr[arr.length - 1].code
+                this.rightNav.seeCode = false
             }).catch(err => {
+                this.rightNav.seeCode = true
                 console.log(err)
+                console.log(" asdasd : ",this.rightNav.seeCode)
             })
     },
     methods: {

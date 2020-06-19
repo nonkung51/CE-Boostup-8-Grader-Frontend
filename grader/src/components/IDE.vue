@@ -328,12 +328,10 @@ export default {
                     }
                     this.compile.time = res.data.timeUsage
                 } else {
-                    if (res.data.returnCode) {
-                        this.compile.log = "Compile Error Code -1"
-                    } else {
-                        this.compile.log = res.data.result;
-                        this.compile.time = res.data.timeUsage
-                    }
+                    // var standAlone = ["C" , "B" , "L" , "F"]
+                    this.compile.log = res.data.result;
+                    this.compile.time = res.data.timeUsage
+
                 }
             }).catch(err => {
                 console.log(err)
@@ -342,9 +340,9 @@ export default {
         },
         Submit() {
             let data = {
-                token : this.$store.getters['user/getToken'],
+                token: this.$store.getters['user/getToken'],
                 code: this.ide.code,
-                questionId : this.task.id
+                questionId: this.task.id
             }
             this.axios.post('http://localhost:8080/api/v1/submission/', data, {
                 headers: {
@@ -372,8 +370,7 @@ export default {
             this.ide.title = "Write Your Code Below.."
         }
     },
-    created() {
-    },
+    created() {},
 }
 </script>
 

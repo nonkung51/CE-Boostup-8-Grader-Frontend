@@ -17,12 +17,12 @@ export default { // eslint-disable-next-line no-unused-vars
         getSubmission: state => {
             var data = state.data
             if (data.submission.length) {
-                var arr = data.submission
+                let arr = JSON.parse(JSON.stringify(data.submission))
                 for (let i = 0; i < arr.length; i++) {
                     arr[i].i_d = i + 1;
                     var q = data.questions.filter(el => {
                         return el.id == arr[i].questionId
-                    })
+                    }).slice()
                     if (q[0]) {
                         let key = ["title", "rank", "finished", "id"]
                         key.forEach(key => {
@@ -30,8 +30,7 @@ export default { // eslint-disable-next-line no-unused-vars
                         })
                     }
                 }
-                console.log(arr)
-                return arr
+                return arr.slice()
             }
             return []
         },
