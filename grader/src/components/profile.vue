@@ -1,6 +1,6 @@
 <template>
 <v-row class="mx-auto my-12" justify="space-around">
-    <v-card class="elevation-8" width="20%">
+    <v-card class="elevation-8 radius-bottom-20"  height="500" width="20%">
         <v-hover v-slot:default="{ hover }">
             <v-img height="250" class="puff-in-center" :src="user.detail.avatar">
                 <v-fade-transition>
@@ -9,7 +9,7 @@
                             <!-- change image -->
                             <v-tooltip bottom>
                                 <template v-slot:activator="{ on }">
-                                    <v-btn @click="$refs.inputUpload.click()" color="info" dark fab v-on="on">
+                                    <v-btn @click="changeMeow()" color="info" dark fab v-on="on">
                                         <v-icon>mdi-autorenew</v-icon>
                                     </v-btn>
                                 </template>
@@ -28,7 +28,7 @@
             </v-tab>
         </v-tabs>
         <v-card-text>
-            <v-text-field label="Your Name" outlined :value="user.detail.name" :readonly="edit.mode" :hide-details="edit.mode" persistent-hint hint="Edit your name here">
+            <v-text-field label="Your Name" outlined :value="edit.data" v-model="edit.data" :readonly="edit.mode" :hide-details="edit.mode" persistent-hint hint="Edit your name here">
                 <template v-slot:append>
                     <template>
                         <v-tooltip bottom>
@@ -42,12 +42,16 @@
                 </template>
             </v-text-field>
         </v-card-text>
-        <v-footer absolute color="purple accent-4"
-         v-ripple="{ class: `white--text` }"
-         class="d-flex align-center justify-center pa-2"
-         style="color:white;font-weight:500;">
+        <v-footer absolute id="save"  color="purple accent-4" v-ripple="{ class: `white--text` }" class="d-flex align-center justify-center pa-5 radius-bottom-20" style="color:white;font-weight:500;font-size:1.25rem" @click="save()">
             Save Change
         </v-footer>
+        <v-dialog v-model="edit.editError" persistent width="500">
+            <div class="pa-5" color="transparent">
+                <v-alert class="mb-0" prominent dense :class="shake" v-model="edit.editError" dismissible color="indigo" border="left" elevation="2" colored-border icon="mdi-close-circle-outline">
+                    Oops. We encounter : <span style="color:red;">{{edit.editError_Msg}} </span>
+                </v-alert>
+            </div>
+        </v-dialog>
     </v-card>
     <v-card width="75%" class="elevation-8">
         <v-img height="150" class="puff-in-center" src="https://source.unsplash.com/random">
@@ -97,7 +101,8 @@
                                         {{ items[0].content.pie.question.current + "/" + items[0].content.pie.question.max }}
                                     </v-progress-circular>
                                 </v-card-actions>
-                                <v-btn color="orange" outlined>Stars Collected : 3 <v-icon right color="yellow darken-2" class="spin">mdi-star</v-icon></v-btn>
+                                <v-btn color="orange" outlined>Stars Collected : 3 <v-icon right color="yellow darken-2" class="spin">mdi-star</v-icon>
+                                </v-btn>
                             </v-card>
                         </v-col>
 
@@ -167,6 +172,7 @@ export default {
                     }
                 }
             },
+
             // {
             //     tab: 'Setting',
             //     content: 'Tab 3 Content'
@@ -174,7 +180,9 @@ export default {
         ],
         edit: {
             mode: true,
-            data: {}
+            data: {},
+            editError: false,
+            editError_Msg: ""
         },
     }),
     computed: {
@@ -185,15 +193,46 @@ export default {
         pieQuestion() {
             var question = this.items[0].content.pie.question
             return Math.floor((question.current * 100) / question.max)
-        }
+        },
+        shake() {
+            return this.edit.editError ? "shake-horizontal" : " ";
+        },
     },
     methods: {
-
+        save() {
+            this.axios.post('http://localhost:5000/api/v1/nickname/', {
+                nickname: this.edit.data,
+                token: this.$store.getters['user/getToken'],
+            }).then(res => {
+                console.log(res)
+                this.$store.commit('user/changeName', this.edit.data)
+                alert("Refresh!!")
+                location.reload();
+            }).catch(err => {
+                this.edit.editError = true
+                this.edit.editError_Msg = err.response.data.msg
+            })
+        },
+        changeMeow() {
+            this.axios.get('https://aws.random.cat/meow').then(res => {
+                this.$store.commit('user/changeImage', res.data.file)
+            }).catch(()=> {
+                this.edit.editError = true
+                this.edit.editError_Msg = "U Failed To Change Meow Meow"
+            })
+        },
     },
     created() {
         var store = this.$store;
         this.user = store.state.user.data
-        this.edit.data = this.user.data
+        this.edit.data = this.user.detail.name
+
+    },
+    mounted() {
+        var save = document.getElementById("save")
+        save.addEventListener("click",
+            this.save, false
+        )
     },
 }
 </script>

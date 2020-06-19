@@ -28,7 +28,15 @@
             </template>
         </v-tabs>
         <v-spacer></v-spacer>
-        <themeSwitch></themeSwitch>
+        <v-tooltip bottom>
+            <template v-slot:activator="{ on }">
+                <v-btn v-on="on">
+                <themeSwitch></themeSwitch>
+                </v-btn>
+            </template>
+            <span>Switch Theme</span>
+        </v-tooltip>
+        <v-divider class="mx-3"></v-divider>
         <v-menu offset-y transition="slide-x-transition">
             <template v-slot:activator="{ on }">
                 <v-chip v-on="on" style="border-radius:50px !important;width:250px;" class="pa-5 elevation-3" pill outlined color="black" @click="{}">
@@ -37,7 +45,7 @@
                             <v-img :src="user.detail.avatar"></v-img>
                         </v-avatar>
                     </v-badge>
-                    {{user.username}}  <!-- should be detail.name -->
+                    {{user.detail.name}} 
                 </v-chip>
             </template>
             <v-card width="300">
@@ -86,10 +94,10 @@
 </template>
 
 <script>
-import themeSwitch from '../components/miniComp/switchTheme'
-import scaleOver from '../components/miniComp/scaleOver'
-import mixin from '../components/mixins'
-// @ is an alias to /src
+import themeSwitch from '@/components/miniComp/switchTheme'
+import scaleOver from '@/components/miniComp/scaleOver'
+import mixin from '@/components/mixins'
+ 
 export default {
     name: 'Home',
     mixins: [mixin],
@@ -102,7 +110,7 @@ export default {
             mini: false,
             right: true,
             drawer: true,
-            user:{},
+            user: {},
             items: [{
                     title: "Home",
                     icon: "mdi-home-city",
@@ -127,22 +135,23 @@ export default {
                 link: "/Home/dashboard"
             }, {
                 name: "Tasks",
-                link: "/Home/task"
+                link: "/Home/work/task"
             }, {
                 name: "Submission",
-                link: "/Home/submission"
+                link: "/Home/work/submission"
             }, {
                 name: "Learn",
                 link: "/Home/learn"
+            }, {
+                name: "Information",
+                link: "/Home/learn2"
             }]
+
         }
     },
     created() {
-        //var cookies = this.$cookies;
-        //this.user_Name = cookies.get('user');
         var store = this.$store;
         this.user = store.state.user.data
-        //console.log(this.$store.state.user.data)
     },
     mounted() {
         this.scaleover = "scale-over-out"
@@ -178,11 +187,15 @@ a {
     text-decoration-line: none !important;
 }
 
-.home{
+.home {
     height: 100%;
 }
 
 .v-tabs-slider-wrapper {
     height: 3px !important;
+}
+
+.v-data-table-header>tr>th>span {
+    font-size: 20px;
 }
 </style>
