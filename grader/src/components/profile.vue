@@ -1,6 +1,6 @@
 <template>
 <v-row class="mx-auto my-12" justify="space-around">
-    <v-card class="elevation-8 radius-bottom-20"  height="450" width="20%">
+    <v-card class="elevation-8 radius-bottom-20"  height="500" width="20%">
         <v-hover v-slot:default="{ hover }">
             <v-img height="250" class="puff-in-center" :src="user.detail.avatar">
                 <v-fade-transition>
@@ -42,7 +42,7 @@
                 </template>
             </v-text-field>
         </v-card-text>
-        <v-footer absolute id="save" color="purple accent-4" v-ripple="{ class: `white--text` }" class="d-flex align-center justify-center pa-2 radius-bottom-20" style="color:white;font-weight:500;" @click="save()">
+        <v-footer absolute id="save"  color="purple accent-4" v-ripple="{ class: `white--text` }" class="d-flex align-center justify-center pa-5 radius-bottom-20" style="color:white;font-weight:500;font-size:1.25rem" @click="save()">
             Save Change
         </v-footer>
         <v-dialog v-model="edit.editError" persistent width="500">
@@ -202,7 +202,7 @@ export default {
         save() {
             this.axios.post('http://localhost:5000/api/v1/nickname/', {
                 nickname: this.edit.data,
-                token: this.$store.commit('user/getToken'),
+                token: this.$store.getters['user/getToken'],
             }).then(res => {
                 console.log(res)
                 this.$store.commit('user/changeName', this.edit.data)
@@ -220,7 +220,7 @@ export default {
                 this.edit.editError = true
                 this.edit.editError_Msg = "U Failed To Change Meow Meow"
             })
-        }
+        },
     },
     created() {
         var store = this.$store;

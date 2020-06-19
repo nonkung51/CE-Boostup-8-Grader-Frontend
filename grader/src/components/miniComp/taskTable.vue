@@ -109,7 +109,7 @@
                                     </v-col>
                                     <v-divider vertical> </v-divider>
                                     <v-col>
-                                        <v-rating :full-icon="item.rank/2 >= 5 ? ratingIcon.full : ratingIcon.default" :value="item.rank/2" style="flex: none;" :color="item.rank >= 4.5 ? 'red':'amber'" dense half-increments readonly size="20"></v-rating>
+                                        <v-rating :full-icon="item.rank/2 >= 5 ? ratingIcon.full : ratingIcon.default" :half-icon="ratingIcon.half" :value="item.rank/2" style="flex: none;" :color="ratingCol(item.rank)" dense half-increments readonly size="20"></v-rating>
                                     </v-col>
                                 </v-row>
 
@@ -167,7 +167,7 @@
                 <v-data-table hide-default-footer :items-per-page.sync="itemsPerPage" :page="page" :search="search" @click:row="to($event)" :headers="table.header" :items="props.items">
 
                     <template v-slot:item.rank="{ item }">
-                        <v-rating :full-icon="item.rank/2 >= 5 ? ratingIcon.full : ratingIcon.default" :value="item.rank/2" style="flex: none;" :color="item.rank >= 4.5 ? 'red':'amber'" dense half-increments readonly size="20"></v-rating>
+                        <v-rating :half-icon="ratingIcon.half" :full-icon="item.rank/2 >= 5 ? ratingIcon.full : ratingIcon.default" :value="item.rank/2" style="flex: none;" :color="ratingCol(item.rank)" dense half-increments readonly size="20"></v-rating>
                     </template>
 
                     <template v-slot:item.types="{ item }">
@@ -294,7 +294,8 @@ export default {
             mode: false,
             ratingIcon: {
                 full: "mdi-skull",
-                default : "mdi-star"
+                half: "mdi-star-half-full",
+                default: "mdi-star"
             }
         }
     },
@@ -361,6 +362,10 @@ export default {
         tagFilter(str) {
             return str.split("$.$")
         },
+        ratingCol(rank) {
+            var cols = ['green', 'amber', 'red']
+            return cols[Math.floor(rank / 5)]
+        }
     },
     created() {
 

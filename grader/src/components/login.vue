@@ -36,7 +36,7 @@
                             <v-card-actions>
                                 <v-btn text> <a>Contact Staff </a> </v-btn>
                                 <v-spacer></v-spacer>
-                                <v-btn :class="scaleIn" v-show="loginValid" @click.end="register()" color="purple accent-4" style="text-decoration-line:none;color:white">Register With This Form ?</v-btn>
+                                <v-btn :class="scaleIn" v-show="loginValid" @click.end="register()" color="purple accent-4" style="text-decoration-line:none;color:white">Register With This User ?</v-btn>
                                 <v-btn :loading="wait" @click.end="login()" :disabled="!valid" color="purple accent-4" style="text-decoration-line:none;color:white">Login</v-btn>
                             </v-card-actions>
                             <!--  -->
