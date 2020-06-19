@@ -15,10 +15,10 @@ export default {
     background: #42b983;
     border-radius: 50%;
     position: fixed;
-    top: -200px;
-    right: -200px;
+    top: -250px;
+    right: -250px;
     z-index: 10;
-    width: 200px;
-    height: 200px;
+    width: 250px;
+    height: 250px;
 }
 </style>

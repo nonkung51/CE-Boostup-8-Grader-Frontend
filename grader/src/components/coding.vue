@@ -48,7 +48,7 @@
                             <v-sheet class="pa-5 mt-2">
                                 <v-row align="center">
                                     <v-col cols="4">
-                                        <v-btn block outlined class="mt-1 glow-lightbrue" color="info"><strong>Question's Rank</strong></v-btn>
+                                        <v-btn block outlined class="mt-1 glow-lightblue" color="info"><strong>Question's Rank</strong></v-btn>
                                     </v-col>
                                     <v-col cols="4">
                                         <v-rating :value="task.rank/2" color="amber" dense half-increments readonly size="20"></v-rating>
@@ -56,7 +56,7 @@
                                 </v-row>
                                 <v-row align="center">
                                     <v-col cols="4">
-                                        <v-btn block outlined class="mt-1 glow-lightbrue" color="info"><strong>Score Per Case</strong></v-btn>
+                                        <v-btn block outlined class="mt-1 glow-lightblue" color="info"><strong>Score Per Case</strong></v-btn>
                                     </v-col>
                                     <v-col cols="4">
                                         {{task.scorePerCase}}
@@ -64,7 +64,7 @@
                                 </v-row>
                                 <v-row align="center">
                                     <v-col cols="4">
-                                        <v-btn block outlined class="mt-1 glow-lightbrue" color="info"><strong>Last Submit</strong></v-btn>
+                                        <v-btn block outlined class="mt-1 glow-lightblue" color="info"><strong>Last Submit</strong></v-btn>
                                     </v-col>
                                     <v-col cols="3">
                                         {{question.details.list}}
@@ -155,17 +155,21 @@ export default {
             token: this.$store.getters['user/getToken'],
             questionId: this.task.id
         }
-        this.axios.post("http://localhost:8080/api/v1/get_finish_code", body)
-            .then(res => {
-                console.log(res)
-                var arr = res.data.data
-                this.rightNav.lastCode = arr[arr.length - 1].code
-                this.rightNav.seeCode = false
-            }).catch(err => {
-                this.rightNav.seeCode = true
-                console.log(err)
-                console.log(" asdasd : ",this.rightNav.seeCode)
-            })
+        let config = {
+            headers: {
+                'Access-Control-Allow-Origin': '*',
+            }
+        }
+        this.axios.post(this.$store.state.api + "/api/v1/get_finish_code", body, config).then(res => {
+            console.log(res)
+            var arr = res.data.data
+            this.rightNav.lastCode = arr[arr.length - 1].code
+            this.rightNav.seeCode = false
+        }).catch(err => {
+            this.rightNav.seeCode = true
+            console.log(err)
+            console.log(" asdasd : ", this.rightNav.seeCode)
+        })
     },
     methods: {
         setBorderWidth() {
@@ -257,19 +261,6 @@ export default {
 
 .v-window-item {
     height: 95% !important;
-}
-
-.glow-lightbrue {
-    box-shadow: 0px 3px 1px -2px rgba(33, 150, 243, 0.2), 0px 2px 2px 0px rgba(33, 150, 243, 0.14), 0px 1px 5px 0px rgba(33, 150, 243, 0.12) !important;
-}
-
-.glow-success {
-    box-shadow: 0px 3px 1px -2px rgba(76, 175, 80, 0.2), 0px 2px 2px 0px rgba(76, 175, 80, 0.14), 0px 1px 5px 0px rgba(76, 175, 80, 0.12) !important;
-}
-
-.glow-indigo {
-    box-shadow: 0px 3px 1px -2px rgba(75, 0, 130, 0.2), 0px 2px 2px 0px rgba(75, 0, 130, 0.14), 0px 1px 5px 0px rgba(75, 0, 130, 0.12) !important;
-
 }
 
 .v-dialog {

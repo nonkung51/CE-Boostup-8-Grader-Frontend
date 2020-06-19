@@ -5,59 +5,69 @@
     <v-main>
         <v-container style="background:transparent;position:absolute;" fill-height fluid>
             <v-row align="center" justify="center">
-                <v-col cols="12" sm="8" md="4">
-                    <v-fab-transition>
-                        <v-card v-show="cardShow" class="elevation-12 fab-trans" style="z-index:4">
-                            <!-- header -->
-                            <v-toolbar color="gradient blue-red" dark text>
-                                <v-toolbar-title>Login form</v-toolbar-title>
-                                <v-spacer></v-spacer>
-                                <v-btn icon large target="_blank">
-                                    <v-icon>mdi-file-document-edit-outline</v-icon>
-                                </v-btn>
-                            </v-toolbar>
+                <!-- <v-fab-transition> -->
+                <v-card v-show="cardShow" class=" scale-in-center elevation-12 fab-trans" width="1000" style="z-index:4">
+                    <!-- header -->
+                    <v-flex class="d-flex ma-0 pa-0">
+                        <v-col class="ma-0 pa-0">
+                            <v-sheet height="800" class="gradient t5-t2">
+                            </v-sheet>
+                        </v-col>
+                        <v-col class="ma-0 pa-0">
                             <!--  -->
-                            <v-card-text>
+                            <v-row class="ma-0 d-flex flex-column align-center justify-center" style="height:100%">
+
+                                <v-col class="ma-0 pa-5 d-flex flex-column align-center justify-center" cols="4" style="max-width:100%">
+                                    <span class="text-h3 pa-5 font-weight-black">Sign in</span>
+                                    <span class="text-h6 pa-2 font-weight-black">Login or "Try" to Register</span>
+                                </v-col>
                                 <!-- error alert -->
                                 <v-alert :class="shake" v-model="loginValid" dismissible color="indigo" border="left" elevation="2" colored-border icon="mdi-close-circle-outline">
                                     Oops. : <span style="color:red;">{{loginErrorMessage}} </span>
                                 </v-alert>
                                 <!--  -->
                                 <!-- login form -->
-                                <v-form ref="form" v-model="valid">
-                                    <v-text-field outlined rounded label="Login" :rules="nameRules" counter name="login" prepend-inner-icon="person" type="text" v-model="userFill" required></v-text-field>
+                                <v-col class="ma-0 pa-0" cols="6" style="max-width:100%">
+                                    <v-form class="pa-5" ref="form" v-model="valid">
+                                        <v-text-field outlined rounded label="Username" :rules="nameRules" counter name="login" prepend-inner-icon="person" type="text" v-model="userFill" required></v-text-field>
+                                        <v-text-field :append-icon="show1 ? 'mdi-eye' : 'mdi-eye-off'" outlined rounded id="password" :rules="nameRules" counter label="Password" name="password" prepend-inner-icon="lock" :type=" !show1 ? 'text' : 'password'" v-model="passFill" @click:append="show1 = !show1" required></v-text-field>
 
-                                    <v-text-field :append-icon="show1 ? 'mdi-eye' : 'mdi-eye-off'" outlined rounded id="password" :rules="nameRules" counter label="Password" name="password" prepend-inner-icon="lock" :type=" !show1 ? 'text' : 'password'" v-model="passFill" @click:append="show1 = !show1" required></v-text-field>
-                                </v-form>
-                                <!--  -->
-                            </v-card-text>
-                            <v-divider></v-divider>
-                            <!-- action button -->
-                            <v-card-actions>
-                                <v-btn text> <a>Contact Staff </a> </v-btn>
-                                <v-spacer></v-spacer>
-                                <v-btn :class="scaleIn" v-show="loginValid" @click.end="register()" color="purple accent-4" style="text-decoration-line:none;color:white">Register With This User ?</v-btn>
-                                <v-btn :loading="wait" @click.end="login()" :disabled="!valid" color="purple accent-4" style="text-decoration-line:none;color:white">Login</v-btn>
-                            </v-card-actions>
+                                        <v-btn rounded class="ma-2 pa-6 elevation-5" :class="scaleIn" v-show="loginValid" @click.end="register()" color="#42b983" style="text-decoration-line:none;color:white">Register With This User ?</v-btn>
+                                        <v-btn rounded class="ma-2 pa-6 glow-success " :loading="wait" @click.end="login()" :disabled="!valid" color="#42b983" style="text-decoration-line:none;color:white">Login</v-btn>
+                                    </v-form>
+                                </v-col>
+                            </v-row>
                             <!--  -->
-                        </v-card>
-                    </v-fab-transition>
-                    <!-- Login progress bar -->
-                    <v-dialog v-model="wait" persistent width="300">
-                        <v-card color="primary" dark>
-                            <v-card-text>
-                                <v-row align="center" justify="center" style="height:100%">
-                                    <v-col>
-                                        <span class="mb-2">We are Logging You in...</span>
-                                        <v-divider></v-divider>
-                                        <v-progress-linear indeterminate color="white" class="mb-0"></v-progress-linear>
-                                    </v-col>
-                                </v-row>
-                            </v-card-text>
-                        </v-card>
-                    </v-dialog>
 
-                </v-col>
+                            <!-- action button -->
+
+                            <v-footer color="warning" dark absolute>
+                                <v-card-actions style="width:100%">
+                                    <v-btn text :ripple="false"> Powered By Glairly </v-btn>
+                                    <v-spacer></v-spacer>
+                                    <v-btn text :ripple="false"> Contact Staff </v-btn>
+                                </v-card-actions>
+                            </v-footer>
+                        </v-col>
+                    </v-flex>
+                    <!--  -->
+                </v-card>
+                <!-- </v-fab-transition> -->
+                <!-- Login progress bar -->
+                <v-dialog v-model="wait" persistent width="500">
+                    <v-card color="primary" dark>
+                        <v-card-text class="pa-5 ma-0">
+                            <v-row class="ma-0 pa-0" align="center" justify="center" style="height:100%">
+                                <v-col>
+                                    <span class="mb-2 text-h6">We are Logging You in...</span>
+
+                                    <v-progress-linear indeterminate color="white" class="mb-0 my-2"></v-progress-linear>
+                                </v-col>
+                            </v-row>
+                        </v-card-text>
+                    </v-card>
+                </v-dialog>
+
             </v-row>
             <!-- <vue-particles style="height:100%;position:absolute;width:100%" color="#dedede" :particleOpacity="0.7" :particlesNumber="80" shapeType="polygon" :particleSize="4" linesColor="#dedede" :linesWidth="1" :lineLinked="true" :lineOpacity="0.4" :linesDistance="150" :moveSpeed="3" :hoverEffect="true" hoverMode="grab" :clickEffect="true" clickMode="push"> </vue-particles> -->
         </v-container>
@@ -80,7 +90,8 @@ export default {
     mixins: [mixin],
     components: {
         themeSwitch,
-        scaleOver
+        scaleOver,
+
     },
     props: {
         source: String,
@@ -119,7 +130,7 @@ export default {
             this.$refs.form.validate()
         },
         register() {
-            this.axios.post('http://localhost:5000/api/v1/register/', {
+            this.axios.post(this.$store.state.api + '/api/v1/register/', {
                     "username": this.userFill,
                     "password": this.passFill,
                     "nickname": "anonymous"
@@ -133,8 +144,9 @@ export default {
         login() {
             this.wait = true
             this.loginValid = false;
+
             // Call login API 
-            this.axios.post("http://localhost:5000/api/v1/login/", {
+            this.axios.post(this.$store.state.api + "/api/v1/login/", {
                     "username": this.userFill,
                     "password": this.passFill,
                 }).then(response => {
@@ -206,6 +218,19 @@ export default {
     &.blue-red {
         background: rgb(0, 155, 255);
         background: linear-gradient(90deg, rgba(0, 155, 255, 1) 0%, rgba(255, 0, 0, 1) 100%);
+    }
+    &.t1-t2 {
+        background: var(--theme-1);
+        background: linear-gradient(90deg, var(--theme-1) 0%, var(--theme-2) 100%);
+
+    }
+    &.t2-t5{
+        background: var(--theme-2);
+        background: linear-gradient(90deg, var(--theme-2) 0%, var(--theme-5) 100%);
+    }
+       &.t5-t2{
+        background: var(--theme-5);
+        background: linear-gradient(90deg, var(--theme-5) 0%, var(--theme-2) 100%);
     }
 }
 </style>

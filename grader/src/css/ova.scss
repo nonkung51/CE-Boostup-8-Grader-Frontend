@@ -27,3 +27,18 @@
          }
      }
  }
+ 
+ $color: ("white": rgb(255, 255, 255), "lightblue": rgb(33, 150, 243), "success":rgb(78, 175, 80), "indigo":rgb(75, 0, 13));
+ @each $c,
+ $col in $color {
+     .glow-#{$c} {
+         box-shadow: 0px 3px 5px -1px rgba($col, 0.2), 0px 5px 8px 0px rgba($col, 0.14), 0px 1px 14px 0px rgba($col, 0.12) !important;
+     }
+ }
+ 
+ @each $c,
+ $col in $theme {
+     .glow-#{$c} {
+         box-shadow: 0px 3px 5px -1px rgba($col, 0.2), 0px 5px 8px 0px rgba($col, 0.14), 0px 1px 14px 0px rgba($col, 0.12) !important;
+     }
+ }
