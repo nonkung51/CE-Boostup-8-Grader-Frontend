@@ -315,7 +315,7 @@ export default {
             }
             data = JSON.stringify(data)
 
-            this.axios.post('http://localhost:8080/compiler', data, {
+            this.axios.post(this.$store.state.compiler+'/compiler', data, {
                 headers: {
                     'Content-Type': 'application/json'
                 }
@@ -344,7 +344,7 @@ export default {
                 code: this.ide.code,
                 questionId: this.task.id
             }
-            this.axios.post('http://localhost:8080/api/v1/submission/', data, {
+            this.axios.post(this.$store.state.api+'/api/v1/submission/', data, {
                 headers: {
                     'Content-Type': 'application/json'
                 }

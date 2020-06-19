@@ -200,7 +200,7 @@ export default {
     },
     methods: {
         save() {
-            this.axios.post('http://localhost:5000/api/v1/nickname/', {
+            this.axios.post('/api/v1/nickname/', {
                 nickname: this.edit.data,
                 token: this.$store.getters['user/getToken'],
             }).then(res => {

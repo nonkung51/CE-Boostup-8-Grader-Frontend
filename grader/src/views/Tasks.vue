@@ -17,7 +17,7 @@ export default {
         }
     },
     created() {
-        this.axios.get('http://localhost:8080/api/v1/questions').then(response => {
+        this.axios.get(this.$store.state.api + "/api/v1/questions").then(response => {
             this.tasks = response.data.data;
             for (var i = 0; i < this.tasks.length; i++) {
                 this.tasks[i].i_d = i + 1;
