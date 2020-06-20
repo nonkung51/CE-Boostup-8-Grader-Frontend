@@ -1,6 +1,6 @@
 <template>
 <div class="ma-12" style="background:transparent;">
-    <taskTable type="question" animation="swing-in-top-bck" :tasks="tasks" title="All Questions" color="#42b983"></taskTable>
+    <taskTable type="question" animation="swing-in-top-bck" :tasks="tasks" title="All Questions" color="#8c8f11"></taskTable>
 </div>
 </template>
 

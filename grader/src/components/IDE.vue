@@ -78,9 +78,7 @@
 
         <v-col>
             <v-row class="ma-0" justify="end">
-                <v-btn outlined class="mr-5">
-                    <v-checkbox label="Compile With Sample" color="orange darken-1" class="ma-0" hide-details v-model="compile.withSample"></v-checkbox>
-                </v-btn>
+
                 <!-- Complie sample -->
                 <v-btn color="warning" class="mr-5" raised @click.end="openCompile()">
                     <v-icon left>mdi-console</v-icon> Open Console
@@ -101,19 +99,25 @@
         </v-col>
     </v-row>
     <v-divider></v-divider>
+    <!-- Console -->
     <v-sheet id="logs" class="text-left mt-2 elevation-3" v-show="compile.show">
+        <!-- Result -->
         <v-card class="pa-5">
             <v-toolbar class="elevation-0">
                 <v-col class="ma-0 pa-0" cols="2">
                     <v-btn block :ripple="false" class="mt-1" id="result" color="info"><strong>Result</strong></v-btn>
                 </v-col>
+                <v-col cols="3">
+                    <v-btn v-if="compile.time" block outlined class="mt-1" id="result" color="info">Time Used : <strong>{{ compile.time + " s."}}</strong></v-btn>
+                </v-col>
                 <v-row align="center" justify="end">
-                    <v-col cols="3">
-                        <v-btn v-if="compile.time" block outlined class="mt-1" id="result" color="info">Time Used : <strong>{{ compile.time + " s."}}</strong></v-btn>
-                    </v-col>
+                    <v-btn outlined class="mr-5">
+                        <v-checkbox label="Compile With Sample" color="orange darken-1" class="ma-0" hide-details v-model="compile.withSample"></v-checkbox>
+                    </v-btn>
+
                     <v-col cols="3">
                         <v-btn block class="mt-1" id="result" color="indigo" dark @click.end="Compiling()">
-                            <v-icon left>mdi-code-tags-check</v-icon> <strong>Compiling</strong>
+                            <v-icon left>mdi-code-tags-check</v-icon> <strong>Compile !!</strong>
                         </v-btn>
                     </v-col>
                 </v-row>
@@ -126,9 +130,14 @@
                         <template v-if="compile.withSample">
                             <v-tab v-for="(i,index) in compile.compile_Status.length" :key="index">
                                 <v-btn text :ripple="false">
-                                    Case : {{index + 1}}
-                                    <v-icon v-if="compile.compile_Status[index] == 'P'" color="success" right>mdi-check-bold</v-icon>
-                                    <v-icon v-else color="error" right>mdi-close</v-icon>
+                                    <span v-if="!standAloneCase(i)">
+                                        Case : {{index + 1}}
+                                        <v-icon v-if="compile.compile_Status[index] == 'P'" color="success" right>mdi-check-bold</v-icon>
+                                        <v-icon v-else color="error" right>mdi-close</v-icon>
+                                    </span>
+                                    <span v-else>
+                                        Compile Error Code : {{i}}
+                                    </span>
                                 </v-btn>
                             </v-tab>
                         </template>
@@ -315,7 +324,7 @@ export default {
             }
             data = JSON.stringify(data)
 
-            this.axios.post(this.$store.state.compiler+'/compiler', data, {
+            this.axios.post(this.$store.state.compiler + '/compiler', data, {
                 headers: {
                     'Content-Type': 'application/json'
                 }
@@ -344,7 +353,7 @@ export default {
                 code: this.ide.code,
                 questionId: this.task.id
             }
-            this.axios.post(this.$store.state.api+'/api/v1/submission/', data, {
+            this.axios.post(this.$store.state.api + '/api/v1/submission/', data, {
                 headers: {
                     'Content-Type': 'application/json'
                 }
@@ -360,6 +369,10 @@ export default {
         },
         fontDec() {
             this.ide.fonts -= this.ide.fonts > 10 ? 1 : 0;
+        },
+        standAloneCase(item) {
+            var standAlone = ["C", "B", "L", "F"]
+            return standAlone.includes(item)
         }
     },
     mounted() {

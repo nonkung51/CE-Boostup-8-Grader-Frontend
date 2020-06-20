@@ -6,7 +6,7 @@
         <v-container style="background:transparent;position:absolute;" fill-height fluid>
             <v-row align="center" justify="center">
                 <!-- <v-fab-transition> -->
-                <v-card v-show="cardShow" class=" scale-in-center elevation-12 fab-trans" width="1000" style="z-index:4">
+                <v-card v-show="cardShow" class=" scale-in-center elevation-12 fab-trans" width="1200" style="z-index:4">
                     <!-- header -->
                     <v-flex class="d-flex ma-0 pa-0">
                         <v-col class="ma-0 pa-0">
@@ -27,12 +27,12 @@
                                 </v-alert>
                                 <!--  -->
                                 <!-- login form -->
-                                <v-col class="ma-0 pa-0" cols="6" style="max-width:100%">
+                                <v-col class="ma-0 px-3" cols="6" style="max-width:100%">
                                     <v-form class="pa-5" ref="form" v-model="valid">
                                         <v-text-field outlined rounded label="Username" :rules="nameRules" counter name="login" prepend-inner-icon="person" type="text" v-model="userFill" required></v-text-field>
                                         <v-text-field :append-icon="show1 ? 'mdi-eye' : 'mdi-eye-off'" outlined rounded id="password" :rules="nameRules" counter label="Password" name="password" prepend-inner-icon="lock" :type=" !show1 ? 'text' : 'password'" v-model="passFill" @click:append="show1 = !show1" required></v-text-field>
 
-                                        <v-btn rounded class="ma-2 pa-6 elevation-5" :class="scaleIn" v-show="loginValid" @click.end="register()" color="#42b983" style="text-decoration-line:none;color:white">Register With This User ?</v-btn>
+                                        <v-btn rounded class="ma-2 pa-6 elevation-5" :class="scaleIn" v-show="loginValid && this.loginErrorMessage == 'No data or User is not existed.'" @click.end="register()" color="#42b983" style="text-decoration-line:none;color:white">Register With This User ?</v-btn>
                                         <v-btn rounded class="ma-2 pa-6 glow-success " :loading="wait" @click.end="login()" :disabled="!valid" color="#42b983" style="text-decoration-line:none;color:white">Login</v-btn>
                                     </v-form>
                                 </v-col>
@@ -40,7 +40,6 @@
                             <!--  -->
 
                             <!-- action button -->
-
                             <v-footer color="warning" dark absolute>
                                 <v-card-actions style="width:100%">
                                     <v-btn text :ripple="false"> Powered By Glairly </v-btn>
@@ -60,6 +59,20 @@
                             <v-row class="ma-0 pa-0" align="center" justify="center" style="height:100%">
                                 <v-col>
                                     <span class="mb-2 text-h6">We are Logging You in...</span>
+
+                                    <v-progress-linear indeterminate color="white" class="mb-0 my-2"></v-progress-linear>
+                                </v-col>
+                            </v-row>
+                        </v-card-text>
+                    </v-card>
+                </v-dialog>
+                <!-- Register -->
+                <v-dialog v-model="waitRegis" persistent width="500">
+                    <v-card color="indigo" dark>
+                        <v-card-text class="pa-5 ma-0">
+                            <v-row class="ma-0 pa-0" align="center" justify="center" style="height:100%">
+                                <v-col>
+                                    <span class="mb-2 text-h6">Waiting For Registeration You in...</span>
 
                                     <v-progress-linear indeterminate color="white" class="mb-0 my-2"></v-progress-linear>
                                 </v-col>
@@ -115,6 +128,8 @@ export default {
             loginErrorMessage: "UnKnow Error",
             cardShow: false,
             scaleover: "",
+            // register
+            waitRegis: false,
         }
     },
     computed: {
@@ -130,6 +145,8 @@ export default {
             this.$refs.form.validate()
         },
         register() {
+            this.waitRegis = true
+            this.loginValid = false;
             this.axios.post(this.$store.state.api + '/api/v1/register/', {
                     "username": this.userFill,
                     "password": this.passFill,
@@ -137,14 +154,18 @@ export default {
                 })
                 .then(res => {
                     console.log(res)
+                    this.waitRegis = false
                 }).catch(err => {
                     console.log(err)
+                    this.loginValid = true
+                    this.loginErrorMessage = err.response.data.msg
+                    this.waitRegis = false
                 })
         },
         login() {
             this.wait = true
             this.loginValid = false;
-
+          
             // Call login API 
             this.axios.post(this.$store.state.api + "/api/v1/login/", {
                     "username": this.userFill,

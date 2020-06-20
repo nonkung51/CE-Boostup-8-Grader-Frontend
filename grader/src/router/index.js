@@ -131,7 +131,8 @@ router.beforeEach((to, from, next) => {
     if (!existPath.includes(to.name)) {
         next('/Home/dashboard');
     }
-
+    // to;
+    // from;
     next();
 });
 

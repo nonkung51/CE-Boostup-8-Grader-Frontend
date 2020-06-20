@@ -12,7 +12,8 @@ export default {
 
 <style>
 .scaleOver {
-    background: #42b983;
+    /* background: #42b983; */
+    background: var(--theme-1);
     border-radius: 50%;
     position: fixed;
     top: -250px;

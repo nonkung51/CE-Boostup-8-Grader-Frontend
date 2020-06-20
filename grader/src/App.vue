@@ -23,7 +23,10 @@
     // background: rgb(250, 250, 250);
 }
 
-.v-content__wrap {}
+@font-face {
+    font-family: 'kuay pleum';
+    src: url('./fonts/font1.ttf') format('ttf');
+}
 </style>
 
 <style>
@@ -46,7 +49,7 @@ export default {
         };
     },
     created() {
-
+        this.$store.commit('setApiPath',process.env.NODE_ENV == 'development')
     },
 };
 </script>

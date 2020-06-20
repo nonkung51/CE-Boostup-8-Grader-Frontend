@@ -22,11 +22,22 @@ const vuexCookie = new VuexPersistence({
 export default new Vuex.Store({
     state: {
         // usage console.log(this.$store.state.apiToken)
-        api: "https://deno.everythink.dev",
-        compiler: "https://bug.everythink.dev"
+        api: "",
+        compiler: ""
+
     },
     mutations: {
         // usage this.$store.commit('setAPiToken',param1)
+        setApiPath(state, dev) {
+            if (dev) {
+                state.api = " " // point to localhost
+                state.compiler = " "
+            } else {
+                state.api = "https://deno.everythink.dev"
+                state.compiler = "https://bug.everythink.dev"
+            }
+            console.log(state)
+        }
     },
     modules: {
         //question
