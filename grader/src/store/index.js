@@ -22,7 +22,7 @@ const vuexCookie = new VuexPersistence({
 export default new Vuex.Store({
     state: {
         // usage console.log(this.$store.state.apiToken)
-        api: "https://deno.everythink.dev",
+        api: "",
         compiler: "https://bug.everythink.dev"
     },
     mutations: {
