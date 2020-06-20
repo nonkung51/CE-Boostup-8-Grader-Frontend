@@ -340,7 +340,6 @@ export default {
                     // var standAlone = ["C" , "B" , "L" , "F"]
                     this.compile.log = res.data.result;
                     this.compile.time = res.data.timeUsage
-
                 }
             }).catch(err => {
                 console.log(err)

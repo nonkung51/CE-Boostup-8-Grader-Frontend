@@ -1,7 +1,5 @@
 import axios from 'axios'
 
-const api = "https://deno.everythink.dev"
-
 export default { // eslint-disable-next-line no-unused-vars
     namespaced: true,
     state: {
@@ -75,15 +73,15 @@ export default { // eslint-disable-next-line no-unused-vars
     },
     // eslint-disable-next-line no-unused-vars
     actions: {
-        updateQuestion({ state, commit }) {
+        updateQuestion({ state, commit, rootState }) {
             var tok = state.data.token
-            axios.get(api + "/api/v1/questions").then(res => {
+            axios.get(rootState.api + "/api/v1/questions").then(res => {
                 var allQuestion = res.data.data
                 commit('setQuestions', allQuestion)
             }).catch(err => {
                 console.log(err)
             })
-            axios.post(api + '/api/v1/list_submission', {
+            axios.post(rootState.api + '/api/v1/list_submission', {
                 token: tok
             }).then(response => {
                 var submission = response.data.data

@@ -1,10 +1,10 @@
 <template>
 <v-sheet class="home">
     <scaleOver :scaleover="scaleover"></scaleOver>
-    <v-app-bar style="z-index:6 !important;" color="#e6bf5e" app clipped-left>
+    <v-app-bar :src="require('@/assets/navBee.png')" style="z-index:6 !important;" color="rgb(255,238,176)" app clipped-left>
         <!-- Title -->
 
-        <v-toolbar class="elevation-0" color="#e6bf5e">
+        <v-toolbar class="elevation-0" color="transparent">
             <v-avatar :tile="true">
                 <img :src="require('@/assets/logo.png')" alt="logo">
             </v-avatar>
@@ -37,9 +37,9 @@
             <span>Switch Theme</span>
         </v-tooltip>
         <v-divider class="mx-3"></v-divider>
-        <v-menu offset-y transition="slide-x-transition">
+        <v-menu color="white" offset-y transition="slide-x-transition">
             <template v-slot:activator="{ on }">
-                <v-chip v-on="on" style="border-radius:50px !important;width:250px;" class="pa-5 elevation-3" pill outlined color="black" @click="{}">
+                <v-chip  v-on="on" style="border-radius:50px !important;width:250px;" class="pa-5 elevation-3" pill outlined color="black" @click="{}">
                     <v-badge bordered bottom color="green accent-4" dot offset-x="15" offset-y="10">
                         <v-avatar v-on="on" left>
                             <v-img :src="user.detail.avatar"></v-img>
@@ -48,7 +48,7 @@
                     {{user.detail.name}}
                 </v-chip>
             </template>
-            <v-card width="300">
+            <v-card  width="300">
                 <v-list dark>
                     <v-list-item>
                         <v-list-item-avatar>

@@ -36,7 +36,6 @@ export default new Vuex.Store({
                 state.api = "https://deno.everythink.dev"
                 state.compiler = "https://bug.everythink.dev"
             }
-            console.log(state)
         }
     },
     modules: {

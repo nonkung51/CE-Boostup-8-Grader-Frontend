@@ -31,7 +31,7 @@ module.exports = {
                 },
             },
             "/compiler": {
-                target: "http://localhost:4906/compiler",
+                target: "https://bug.everythink.dev/compiler",
                 changeOrigin: true,
                 secure: false,
                 pathRewrite: {

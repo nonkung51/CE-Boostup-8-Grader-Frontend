@@ -11,6 +11,7 @@
                     <v-flex class="d-flex ma-0 pa-0">
                         <v-col class="ma-0 pa-0">
                             <v-sheet height="800" class="gradient t5-t2">
+                                <v-img :src="require('@/assets/loginBG.png')"></v-img>
                             </v-sheet>
                         </v-col>
                         <v-col class="ma-0 pa-0">
@@ -32,8 +33,8 @@
                                         <v-text-field outlined rounded label="Username" :rules="nameRules" counter name="login" prepend-inner-icon="person" type="text" v-model="userFill" required></v-text-field>
                                         <v-text-field :append-icon="show1 ? 'mdi-eye' : 'mdi-eye-off'" outlined rounded id="password" :rules="nameRules" counter label="Password" name="password" prepend-inner-icon="lock" :type=" !show1 ? 'text' : 'password'" v-model="passFill" @click:append="show1 = !show1" required></v-text-field>
 
-                                        <v-btn rounded class="ma-2 pa-6 elevation-5" :class="scaleIn" v-show="loginValid && this.loginErrorMessage == 'No data or User is not existed.'" @click.end="register()" color="#42b983" style="text-decoration-line:none;color:white">Register With This User ?</v-btn>
-                                        <v-btn rounded class="ma-2 pa-6 glow-success " :loading="wait" @click.end="login()" :disabled="!valid" color="#42b983" style="text-decoration-line:none;color:white">Login</v-btn>
+                                        <v-btn rounded class="ma-2 pa-6 glow-warning" :class="scaleIn" v-show="loginValid && this.loginErrorMessage == 'No data or User is not existed.'" @click.end="register()" color="warning" style="text-decoration-line:none;color:white">Register With This User ?</v-btn>
+                                        <v-btn rounded class="ma-2 pa-6 glow-warning " :loading="wait" @click.end="login()" :disabled="!valid" color="warning" style="text-decoration-line:none;color:white">Login</v-btn>
                                     </v-form>
                                 </v-col>
                             </v-row>
@@ -72,7 +73,7 @@
                         <v-card-text class="pa-5 ma-0">
                             <v-row class="ma-0 pa-0" align="center" justify="center" style="height:100%">
                                 <v-col>
-                                    <span class="mb-2 text-h6">Waiting For Registeration You in...</span>
+                                    <span class="mb-2 text-h6">Waiting For Registration...</span>
 
                                     <v-progress-linear indeterminate color="white" class="mb-0 my-2"></v-progress-linear>
                                 </v-col>
@@ -80,10 +81,18 @@
                         </v-card-text>
                     </v-card>
                 </v-dialog>
-
             </v-row>
+
             <!-- <vue-particles style="height:100%;position:absolute;width:100%" color="#dedede" :particleOpacity="0.7" :particlesNumber="80" shapeType="polygon" :particleSize="4" linesColor="#dedede" :linesWidth="1" :lineLinked="true" :lineOpacity="0.4" :linesDistance="150" :moveSpeed="3" :hoverEffect="true" hoverMode="grab" :clickEffect="true" clickMode="push"> </vue-particles> -->
         </v-container>
+        <template v-for="c in circleAround">
+            <div :key="c" :class="c" style="width:200px;height:200px;border-radius:50%;">
+                <v-img class="sineMovement" :src="require('@/assets/Bee_d.png')"></v-img>
+            </div>
+        </template>
+        <div class="l-center" style="width:200px;height:200px;border-radius:50%;background:transparent;">
+            <v-img class="sineMovement" :src="require('@/assets/Bee-r.png')"></v-img>
+        </div>
     </v-main>
 </v-app>
 </template>
@@ -130,6 +139,7 @@ export default {
             scaleover: "",
             // register
             waitRegis: false,
+            circleAround: ["c-top-left", "c-center", 'c-bottom-right']
         }
     },
     computed: {
@@ -152,9 +162,14 @@ export default {
                     "password": this.passFill,
                     "nickname": "anonymous"
                 })
-                .then(res => {
-                    console.log(res)
-                    this.waitRegis = false
+                .then(response => {
+                    console.log(response)
+                    var tok = response.data.data.token
+                    this.axios.get('https://aws.random.cat/meow').then(res => {
+                        this.loginSuccess(response.data.data, res, tok)
+                    }).catch(err => {
+                        console.log(err)
+                    })
                 }).catch(err => {
                     console.log(err)
                     this.loginValid = true
@@ -165,7 +180,7 @@ export default {
         login() {
             this.wait = true
             this.loginValid = false;
-          
+
             // Call login API 
             this.axios.post(this.$store.state.api + "/api/v1/login/", {
                     "username": this.userFill,
@@ -176,7 +191,7 @@ export default {
                     // login success
                     console.log(response)
                     this.axios.get('https://aws.random.cat/meow').then(res => {
-                        this.loginSuccess(response, res, tok)
+                        this.loginSuccess(response.data.user, res, tok)
                     }).catch(err => {
                         console.log(err)
                     })
@@ -200,9 +215,9 @@ export default {
                 token: token,
                 username: this.userFill,
                 detail: {
-                    email: res1.data.user.nickname + "@kmitl.ac.th",
+                    email: res1.nickname + "@kmitl.ac.th",
                     avatar: prof.data.file,
-                    name: res1.data.user.nickname
+                    name: res1.nickname
                 },
                 question_Done: {},
                 submission: {}
@@ -210,6 +225,7 @@ export default {
             this.$store.commit('user/set', data)
             this.scaleover = "scale-over"
             this.wait = false
+            this.waitRegis = false
             // animation sake
             setTimeout(() => {
                 try {
@@ -254,4 +270,39 @@ export default {
         background: linear-gradient(90deg, var(--theme-5) 0%, var(--theme-2) 100%);
     }
 }
+
+.c-top-left {
+    position: fixed;
+    left:  0px;
+    top: 0px;
+    --radius : 300px;
+    animation: circleAround 5s infinite cubic-bezier(0.250, 0.460, 0.450, 0.940) both;
+}
+.c-center{
+        position: fixed;
+        z-index:10;
+    left: 50%;
+    top: 50%;
+    --radius : 800px;
+    animation: circleAround 4s linear infinite;
+}
+.c-bottom-right{
+        position: fixed;
+    left: 100%;
+    top: 100%;
+    --radius : 300px;
+    animation: circleAround-r 5s cubic-bezier(0.250, 0.460, 0.450, 0.940)   infinite;
+}
+
+.l-center{
+    position: fixed;
+      z-index:10;
+    left: -10%;
+    top: 50%;
+    animation: linearAround 5s  alternate infinite ease-in-out;
+}
+.sineMovement{
+    animation: sineMovement 1.5s alternate infinite ease-in-out;
+ }
+
 </style>
